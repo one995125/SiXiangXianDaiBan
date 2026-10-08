@@ -117,13 +117,10 @@ async function pullUserData(openid, rawBootstrap) {
 }
 
 async function pushUserData(openid, rawData, rawBaseRevision) {
-  if (!isFiniteNumber(rawBaseRevision) || !Number.isInteger(rawBaseRevision) || rawBaseRevision < 0) {
-    return createError(
-      'CLIENT_UPGRADE_REQUIRED',
-      '当前版本不支持安全的多设备同步，请更新小程序后重试',
-      '新版客户端会先读取云端 revision，再执行带版本校验的上传。',
-    )
-  }
+  // schema 7 客户端始终传入非负整数；缺失或非法值仅在过渡期识别为 schema 6 旧协议。
+  const isLegacyPush = !isFiniteNumber(rawBaseRevision)
+    || !Number.isInteger(rawBaseRevision)
+    || rawBaseRevision < 0
 
   const sanitized = sanitizePayload(rawData)
 
@@ -135,6 +132,12 @@ async function pushUserData(openid, rawData, rawBaseRevision) {
 
   if (Buffer.byteLength(payloadText, 'utf8') > MAX_PAYLOAD_SIZE) {
     return createError('PAYLOAD_TOO_LARGE', '同步数据过大，请减少历史记录后重试')
+  }
+
+  if (isLegacyPush) {
+    console.warn(`${LOG_TAG} legacy schema-6 push`, {
+      openidPrefix: openid.slice(0, 8),
+    })
   }
 
   try {
@@ -152,7 +155,8 @@ async function pushUserData(openid, rawData, rawBaseRevision) {
       }
 
       const currentRevision = previousDocument ? getDocumentRevision(previousDocument) : 0
-      if (rawBaseRevision !== currentRevision) {
+      // 新协议继续执行乐观锁；旧协议在兼容窗口内恢复 last-write-wins。
+      if (!isLegacyPush && rawBaseRevision !== currentRevision) {
         return {
           success: false,
           code: 'SYNC_CONFLICT',
@@ -191,13 +195,19 @@ async function pushUserData(openid, rawData, rawBaseRevision) {
       documentData.growthState = deriveGrowthMilestones(growthState, documentData, now)
       await transaction.collection(COLLECTION_NAME).doc(openid).set({ data: documentData })
 
-      return {
+      const response = {
         success: true,
         openid,
         updatedAt: now,
         revision: nextRevision,
         growthState: documentData.growthState,
       }
+
+      if (isLegacyPush) {
+        response.legacyPush = true
+      }
+
+      return response
     })
   } catch (error) {
     console.error(`${LOG_TAG} push failed`, createDatabaseLog(error))

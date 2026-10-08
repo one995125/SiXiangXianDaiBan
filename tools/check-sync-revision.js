@@ -119,6 +119,7 @@ async function run() {
   const firstPush = await main({ action: 'push', baseRevision: 1, data: createSnapshot('设备A修改') })
   assert.strictEqual(firstPush.success, true)
   assert.strictEqual(firstPush.revision, 2)
+  assert.strictEqual(firstPush.legacyPush, undefined)
 
   const stalePush = await main({ action: 'push', baseRevision: 1, data: createSnapshot('设备B旧基线修改') })
   assert.strictEqual(stalePush.success, false)
@@ -133,9 +134,37 @@ async function run() {
   assert.strictEqual(rebasedPush.success, true)
   assert.strictEqual(rebasedPush.revision, 3)
 
-  const unsafeLegacyPush = await main({ action: 'push', data: createSnapshot('无版本上传') })
-  assert.strictEqual(unsafeLegacyPush.success, false)
-  assert.strictEqual(unsafeLegacyPush.code, 'CLIENT_UPGRADE_REQUIRED')
+  const legacyPush = await main({ action: 'push', data: createSnapshot('旧客户端无版本上传') })
+  assert.strictEqual(legacyPush.success, true)
+  assert.strictEqual(legacyPush.legacyPush, true)
+  assert.strictEqual(legacyPush.revision, 4)
+
+  const legacyPull = await main({ action: 'pull' })
+  assert.strictEqual(legacyPull.data.records[0].title, '旧客户端无版本上传')
+  assert.strictEqual(legacyPull.revision, 4)
+
+  currentOpenid = 'legacy-no-revision-user'
+  const oldDocument = createSnapshot('无 revision 的云端旧文档')
+  oldDocument.openid = currentOpenid
+  oldDocument.schemaVersion = 6
+  oldDocument.createdAt = Date.now() - 1000
+  oldDocument.updatedAt = Date.now() - 1000
+  oldDocument.companionState = { nickname: '云端保留字段' }
+  delete oldDocument.revision
+  documents.set(currentOpenid, oldDocument)
+
+  const legacySnapshotWithoutNewField = createSnapshot('旧文档兼容写入')
+  delete legacySnapshotWithoutNewField.companionState
+  const noRevisionLegacyPush = await main({
+    action: 'push',
+    data: legacySnapshotWithoutNewField,
+  })
+  assert.strictEqual(noRevisionLegacyPush.success, true)
+  assert.strictEqual(noRevisionLegacyPush.legacyPush, true)
+  assert.strictEqual(noRevisionLegacyPush.revision, 2)
+  assert.strictEqual(documents.get(currentOpenid).schemaVersion, 7)
+  assert.strictEqual(documents.get(currentOpenid).revision, 2)
+  assert.deepStrictEqual(documents.get(currentOpenid).companionState, { nickname: '云端保留字段' })
 
   currentOpenid = 'growth-user'
   const growthPull = await main({ action: 'pull', bootstrap: { hasLegacyEvidence: false } })
@@ -143,7 +172,7 @@ async function run() {
   assert.strictEqual(growthPull.revision, 1)
   assert.strictEqual(growthCheckin.revision, 2)
 
-  console.log('云同步 revision 专项检查通过：旧基线被拒绝、云端数据未覆盖、回基线后可继续写入。')
+  console.log('云同步 revision 专项检查通过：旧协议无 baseRevision 可兼容写入；合法基线正常递增；无 revision 旧文档按 1 起算。')
 }
 
 run().catch((error) => {
