@@ -1,0 +1,10 @@
+<view wx:if="{{visible}}" class="renew-prompt" role="group" aria-label="下一次计划提醒">
+  <view class="renew-copy">
+    <text class="renew-title">要为下一次计划开启微信提醒吗？</text>
+    <text class="renew-desc">{{title || '当前计划'}} · 一次授权提醒一次</text>
+  </view>
+  <view class="renew-actions">
+    <button class="renew-button is-secondary {{busy ? 'is-busy' : ''}}" disabled="{{busy}}" bindtap="dismiss">暂不</button>
+    <button class="renew-button is-primary {{busy ? 'is-busy' : ''}}" disabled="{{busy}}" bindtap="confirm">{{busy ? '处理中…' : '开启下一次提醒'}}</button>
+  </view>
+</view>

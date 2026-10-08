@@ -1,0 +1,9 @@
+{
+  "name": "sixiang-reminder",
+  "version": "1.0.0",
+  "description": "记得微信订阅提醒登记与状态管理",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

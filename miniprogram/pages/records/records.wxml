@@ -1,0 +1,436 @@
+<view class="desk-page records-page">
+  <scroll-view class="desk-scroll" scroll-y scroll-with-animation scroll-top="{{giftLedgerScrollTop}}">
+    <view class="desk-content" style="padding-top: {{contentTopPadding}}px;">
+      <view class="record-tabs">
+        <button class="record-tab {{viewTab === 'records' ? 'is-active' : ''}}" data-value="records" bindtap="switchViewTab">
+          <image class="record-tab-icon" src="/assets/ui-icons/record-list.png" mode="aspectFit"></image>
+          <text>全部记录</text>
+        </button>
+        <button class="record-tab {{viewTab === 'gifts' ? 'is-active' : ''}}" data-value="gifts" bindtap="switchViewTab">
+          <image class="record-tab-icon" src="/assets/ui-icons/gift-exchange.png" mode="aspectFit"></image>
+          <text>礼簿</text>
+          <text wx:if="{{!growth.isGiftUnlocked}}" class="record-tab-lock">🔒</text>
+        </button>
+        <button class="record-tab {{viewTab === 'moods' ? 'is-active' : ''}}" data-value="moods" bindtap="switchViewTab">
+          <image class="record-tab-icon" src="/assets/ui-icons/mood-rainbow.png" mode="aspectFit"></image>
+          <text>心情</text>
+        </button>
+      </view>
+
+      <view class="paper-sheet">
+        <block wx:if="{{viewTab === 'records'}}">
+          <view class="search-box">
+            <text class="search-icon">⌕</text>
+            <input class="search-input" value="{{keyword}}" placeholder="搜索标题、分类或备注" placeholder-class="search-placeholder" bindinput="onKeywordInput" />
+          </view>
+
+          <scroll-view class="filter-scroll" scroll-x enable-flex>
+            <view class="filter-row">
+              <button wx:for="{{tabs}}" wx:key="value" class="filter-tab {{activeType === item.value && !includeDone ? 'is-active' : ''}}" data-value="{{item.value}}" bindtap="switchTab">{{item.label}}</button>
+            </view>
+          </scroll-view>
+
+          <view class="section-head">
+            <text class="section-title">{{includeDone ? '已完成与归档' : '最近更新'}}</text>
+            <text class="section-note">{{recordsSortNote}}</text>
+          </view>
+          <block wx:if="{{records.length}}">
+            <view wx:if="{{activeType === 'anniversary'}}" class="anniversary-list">
+              <view
+                wx:for="{{records}}"
+                wx:for-index="recordIndex"
+                wx:key="id"
+                class="anniversary-row tone-{{item.anniversaryTone}}"
+                data-id="{{item.id}}"
+                data-index="{{recordIndex}}"
+                data-count="{{records.length}}"
+                bindtap="openRecordDetail"
+                catchlongpress="openRecordOrderMenu"
+              >
+                <view class="anniversary-row-icon {{item.anniversaryMode === 'countdown' ? 'is-countdown' : 'is-elapsed'}}">
+                  <image
+                    class="anniversary-row-icon-image"
+                    src="{{item.anniversaryMode === 'countdown' ? '/assets/ui-icons/anniversary-cake.png' : '/assets/ui-icons/anniversary-heart.png'}}"
+                    mode="aspectFit"
+                  ></image>
+                </view>
+                <view class="anniversary-row-main">
+                  <text class="anniversary-row-title">{{item.title}}</text>
+                  <text class="anniversary-row-date">{{item.date}}</text>
+                </view>
+                <view class="anniversary-row-metric {{item.anniversaryMetricSizeClass}}">
+                  <text class="anniversary-row-prefix">{{item.anniversaryMetricPrefix}}</text>
+                  <text class="anniversary-row-value">{{item.anniversaryMetricValue}}</text>
+                  <text wx:if="{{item.anniversaryMetricUnit}}" class="anniversary-row-unit">{{item.anniversaryMetricUnit}}</text>
+                </view>
+              </view>
+            </view>
+            <view wx:else class="pill-list">
+              <view wx:for="{{records}}" wx:for-index="recordIndex" wx:key="id" class="pill-row tone-{{item.bubbleTone}}" data-id="{{item.id}}" data-index="{{recordIndex}}" data-count="{{records.length}}" bindtap="openRecordDetail" catchlongpress="openRecordOrderMenu">
+                <view class="bubble tone-{{item.bubbleTone}}">
+                  <image wx:if="{{item.designIconAsset}}" class="bubble-icon-image" src="{{item.designIconAsset}}" mode="aspectFit"></image>
+                  <text wx:else>{{item.designIcon}}</text>
+                </view>
+                <view class="pill-main">
+                  <text class="pill-title">{{item.title}}</text>
+                  <text wx:if="{{item.isRecurring}}" class="pill-meta">{{item.recurrenceText}} · {{item.progressText}}</text>
+                  <text wx:else class="pill-meta">{{item.category}} · {{item.type === 'todo' && item.deadlineText ? item.deadlineText : item.relativeText}}</text>
+                </view>
+                <text class="arrow-text">›</text>
+              </view>
+            </view>
+          </block>
+          <view wx:else class="empty-card">
+            <text class="empty-title">{{includeDone ? '还没有已完成记录' : '还没有记录'}}</text>
+                <text class="empty-desc">可以先记一个待办、纪念日、到期事项、便签或周期计划。</text>
+          </view>
+
+          <view class="archive-entry" bindtap="showCompleted">
+            <view>
+              <text class="archive-title">{{completedCount}} 条历史记录</text>
+              <text class="archive-desc">查看已完成事项</text>
+            </view>
+            <text class="arrow-text">›</text>
+          </view>
+        </block>
+
+        <block wx:elif="{{viewTab === 'gifts'}}">
+          <view wx:if="{{!growth.isGiftUnlocked}}" class="gift-lock-card paper-card">
+            <view class="gift-lock-icon"><image src="/assets/ui-icons/gift-exchange.png" mode="aspectFit"></image></view>
+            <text class="gift-lock-kicker">七日成长专属功能</text>
+            <text class="gift-lock-title">礼簿将在 {{growth.progress}}/7 后解锁</text>
+            <text class="gift-lock-desc">解锁后可记录礼金与礼物往来，支持双向统计、搜索定位和长期保存。</text>
+            <view class="gift-lock-progress"><view class="gift-lock-progress-fill" style="width: {{growth.progressPercent}}%;"></view></view>
+            <view class="gift-lock-feature-grid">
+              <text>喜事与憾事分类</text><text>收礼送礼往来</text><text>关键词快速搜索</text><text>金额与日期统计</text>
+            </view>
+            <button class="form-button gift-lock-button" bindtap="goToGrowthCheckin">去计划页签到</button>
+          </view>
+
+          <block wx:else>
+          <view class="gift-mode-tabs">
+            <button class="gift-mode-tab {{giftSubTab === 'sent' ? 'is-active' : ''}}" data-value="sent" bindtap="switchGiftSubTab">
+              <text>送礼</text>
+            </button>
+            <button class="gift-mode-tab {{giftSubTab === 'received' ? 'is-active' : ''}}" data-value="received" bindtap="switchGiftSubTab">
+              <text>收礼</text>
+            </button>
+            <button class="gift-mode-tab {{giftSubTab === 'exchange' ? 'is-active' : ''}}" data-value="exchange" bindtap="switchGiftSubTab">
+              <text>往来记录</text>
+            </button>
+            <button class="gift-ledger-search-button" aria-label="搜索礼金记录" bindtap="openGiftLedgerSearch">
+              <view class="gift-search-lens"></view>
+            </button>
+          </view>
+
+          <block wx:if="{{giftSubTab === 'sent' || giftSubTab === 'received'}}">
+          <view class="gift-ledger-cards">
+            <view
+              wx:for="{{giftLedgerCards}}"
+              wx:key="kind"
+              class="gift-ledger-card {{item.kind}} {{item.isActive ? 'is-active' : ''}}"
+              data-kind="{{item.kind}}"
+              bindtap="switchGiftLedgerKind"
+            >
+              <view class="ledger-card-head">
+                <view class="ledger-card-label-row">
+                  <image class="ledger-card-icon" src="{{item.iconAsset}}" mode="aspectFit"></image>
+                  <text class="ledger-card-label">{{item.label}}</text>
+                </view>
+                <text class="ledger-dot"></text>
+              </view>
+              <view class="ledger-direction-summary">
+                <text>{{item.directionLabel}} {{item.amountText}} · {{item.count}} 条</text>
+              </view>
+              <view class="ledger-names">
+                <text wx:for="{{item.names}}" wx:for-item="name" wx:key="*this">{{name}}</text>
+                <text wx:if="{{!item.names.length}}">暂无记录</text>
+              </view>
+            </view>
+          </view>
+
+          <view wx:if="{{giftLedgerRows.length}}" class="gift-ledger-list">
+            <view id="{{item.anchorId}}" wx:for="{{giftLedgerRows}}" wx:key="id" class="gift-ledger-row {{item.kind}} tone-{{item.toneClass}} {{giftLedgerHighlightedId === item.id ? 'is-search-hit' : ''}}">
+              <view class="ledger-row-main">
+                <text class="ledger-row-title">{{item.title}}</text>
+                <view class="ledger-row-meta">
+                  <text class="ledger-row-amount">{{item.amountText}}</text>
+                  <text class="ledger-row-dot">·</text>
+                  <text>{{item.date}}</text>
+                  <text wx:if="{{item.note}}" class="ledger-row-dot">·</text>
+                  <text wx:if="{{item.note}}" class="ledger-row-note">{{item.note}}</text>
+                </view>
+              </view>
+              <view class="ledger-row-badges">
+                <text class="ledger-direction-badge {{item.direction}}">{{item.directionText}}</text>
+                <text class="ledger-kind-badge {{item.kind}}">{{item.kindLabel}}</text>
+              </view>
+              <button class="ledger-edit" data-id="{{item.id}}" catchtap="openGiftLedgerEditForm">编辑</button>
+              <button class="ledger-delete" data-id="{{item.id}}" catchtap="removeGiftLedgerRow">
+                <view class="ledger-trash">
+                  <view class="ledger-trash-handle"></view>
+                  <view class="ledger-trash-lid"></view>
+                  <view class="ledger-trash-body">
+                    <view class="ledger-trash-line"></view>
+                    <view class="ledger-trash-line"></view>
+                  </view>
+                </view>
+              </button>
+            </view>
+          </view>
+          <view wx:else class="empty-card gift-empty">
+                <text class="empty-title">
+                  {{giftSubTab === 'received'
+                    ? (giftLedgerKind === 'happy' ? '还没有收到的喜事礼金' : '还没有收到的憾事礼金')
+                    : (giftLedgerKind === 'happy' ? '还没有送出的喜事礼金' : '还没有送出的憾事礼金')}}
+                </text>
+                <text class="empty-desc">点击右下角加号记录，方向会自动带入。</text>
+          </view>
+
+          </block>
+
+          <block wx:else>
+            <block wx:if="{{selectedGiftExchangeContact}}">
+              <view class="exchange-detail-head">
+                <button class="exchange-back" bindtap="backToGiftExchangeContacts">‹</button>
+                <view class="exchange-person-main">
+                  <text class="exchange-person-name">{{selectedGiftExchangeContact.name}}</text>
+                  <text class="exchange-person-relation">{{selectedGiftExchangeContact.relation}}</text>
+                </view>
+              </view>
+
+              <view class="exchange-stats">
+                <view class="exchange-stat-card received">
+                  <text class="exchange-stat-value">{{selectedGiftExchangeContact.receivedCount}}</text>
+                  <text class="exchange-stat-label">收到 · {{selectedGiftExchangeContact.receivedAmountText}}</text>
+                </view>
+                <view class="exchange-stat-card sent">
+                  <text class="exchange-stat-value">{{selectedGiftExchangeContact.sentCount}}</text>
+                  <text class="exchange-stat-label">送出 · {{selectedGiftExchangeContact.sentAmountText}}</text>
+                </view>
+              </view>
+
+              <view wx:if="{{giftExchangeRows.length}}" class="exchange-timeline">
+                <view wx:for="{{giftExchangeRows}}" wx:key="id" class="exchange-record-row {{item.direction}}">
+                  <view class="exchange-record-main">
+                    <view class="exchange-record-title-row">
+                      <text class="exchange-entry-kind-badge {{item.entryKind}}">{{item.entryKindText}}</text>
+                      <text class="exchange-direction-badge {{item.direction}}">{{item.directionText}}</text>
+                      <text class="exchange-record-title">{{item.giftName}}</text>
+                    </view>
+                    <view class="exchange-record-meta">
+                      <text>{{item.date}}</text>
+                      <text wx:if="{{item.amountText}}" class="ledger-row-dot">·</text>
+                      <text wx:if="{{item.amountText}}">{{item.amountText}}</text>
+                      <text wx:if="{{item.note}}" class="ledger-row-dot">·</text>
+                      <text wx:if="{{item.note}}" class="ledger-row-note">{{item.note}}</text>
+                    </view>
+                  </view>
+                  <button class="ledger-delete" data-id="{{item.id}}" catchtap="removeGiftExchangeRow">
+                    <view class="ledger-trash">
+                      <view class="ledger-trash-handle"></view>
+                      <view class="ledger-trash-lid"></view>
+                      <view class="ledger-trash-body">
+                        <view class="ledger-trash-line"></view>
+                        <view class="ledger-trash-line"></view>
+                      </view>
+                    </view>
+                  </button>
+                </view>
+              </view>
+              <view wx:else class="empty-card gift-empty">
+                <text class="empty-title">还没有往来记录</text>
+                <text class="empty-desc">可以记录收到或送出的礼金、咖啡、花束等。</text>
+              </view>
+            </block>
+
+            <block wx:else>
+              <view wx:if="{{giftExchangeContacts.length}}" class="exchange-contact-list">
+                <view wx:for="{{giftExchangeContacts}}" wx:key="id" class="exchange-contact-card" data-id="{{item.id}}" bindtap="openGiftExchangeContact">
+                  <view class="exchange-avatar">
+                    <image wx:if="{{item.avatarAsset}}" class="exchange-avatar-image" src="{{item.avatarAsset}}" mode="aspectFit"></image>
+                    <text wx:else>{{item.avatar}}</text>
+                  </view>
+                  <view class="exchange-contact-main">
+                    <text class="exchange-person-name">{{item.name}}</text>
+                    <text class="exchange-person-relation">{{item.relation}}</text>
+                    <text class="exchange-latest">{{item.latestLine}}</text>
+                  </view>
+                  <view class="exchange-counts">
+                    <text>收 {{item.receivedCount}}</text>
+                    <text>送 {{item.sentCount}}</text>
+                  </view>
+                </view>
+              </view>
+              <view wx:else class="empty-card gift-empty">
+                <text class="empty-title">还没有往来联系人</text>
+                <text class="empty-desc">先添加家人或朋友，再记录礼金和礼物往来。</text>
+              </view>
+            </block>
+
+            <button class="add-ledger-button" bindtap="onAddGiftExchangeTap">{{giftExchangeFormVisible ? '－ 收起表单' : '＋ 添加往来记录'}}</button>
+
+            <view wx:if="{{giftExchangeFormVisible}}" class="gift-ledger-form exchange-form paper-card">
+              <view class="gift-form-kind-row">
+                <button class="gift-form-kind {{giftExchangeEntryKind === 'cash' ? 'is-active cash' : ''}}" data-value="cash" bindtap="switchGiftExchangeEntryKind">礼金</button>
+                <button class="gift-form-kind {{giftExchangeEntryKind === 'gift' ? 'is-active gift' : ''}}" data-value="gift" bindtap="switchGiftExchangeEntryKind">礼物</button>
+              </view>
+              <view class="gift-form-kind-row">
+                <button class="gift-form-kind {{giftExchangeDirection === 'received' ? 'is-active received' : ''}}" data-value="received" bindtap="switchGiftExchangeDirection">我收到</button>
+                <button class="gift-form-kind {{giftExchangeDirection === 'sent' ? 'is-active sent' : ''}}" data-value="sent" bindtap="switchGiftExchangeDirection">我送出</button>
+              </view>
+              <input wx:if="{{!selectedGiftExchangeContact}}" class="gift-form-input" value="{{giftExchangeContactName}}" placeholder="对象，如爸爸 / 另一半" placeholder-class="form-placeholder" bindinput="onGiftExchangeContactNameInput" />
+              <input wx:if="{{!selectedGiftExchangeContact}}" class="gift-form-input" value="{{giftExchangeContactRelation}}" placeholder="关系，可不填" placeholder-class="form-placeholder" bindinput="onGiftExchangeContactRelationInput" />
+              <input class="gift-form-input" value="{{giftExchangeGiftName}}" placeholder="{{giftExchangeEntryKind === 'cash' ? '事项，如婚礼 / 生日' : '礼物，如咖啡 / 花束'}}" placeholder-class="form-placeholder" bindinput="onGiftExchangeGiftNameInput" />
+              <view class="gift-form-grid">
+                <input class="gift-form-input" type="digit" value="{{giftExchangeAmount}}" placeholder="金额，可不填" placeholder-class="form-placeholder" bindinput="onGiftExchangeAmountInput" />
+                <picker mode="date" value="{{giftExchangeDate}}" bindchange="onGiftExchangeDateChange">
+                  <view class="gift-form-input gift-date-value">{{giftExchangeDate || '选择日期'}}</view>
+                </picker>
+              </view>
+              <input class="gift-form-input" value="{{giftExchangeNote}}" placeholder="备注，可不填" placeholder-class="form-placeholder" bindinput="onGiftExchangeNoteInput" />
+              <button class="form-button gift-save-button" bindtap="addGiftExchangeFromForm">保存往来记录</button>
+            </view>
+          </block>
+          </block>
+        </block>
+
+        <block wx:else>
+          <view class="mood-panel paper-card">
+            <view class="mood-options">
+              <button wx:for="{{moodOptions}}" wx:key="mood" class="mood-chip {{activeMood === item.mood ? 'is-active' : ''}}" data-mood="{{item.mood}}" bindtap="selectMood">
+                <text>{{item.emoji}}</text>
+                <text>{{item.label}}</text>
+              </button>
+            </view>
+            <textarea class="mood-input" value="{{moodNote}}" maxlength="300" placeholder="{{activeMoodPrompt}}" placeholder-class="mood-placeholder" bindinput="onMoodNoteInput" />
+            <button class="form-button" bindtap="addMoodFromForm">完成记录</button>
+          </view>
+
+          <view wx:if="{{moodRecords.length}}" class="mood-list">
+            <view wx:for="{{moodRecords}}" wx:key="id" class="mood-row tone-{{item.color}}">
+              <view class="bubble tone-{{item.color}}">{{item.emoji}}</view>
+              <view class="pill-main">
+                <text class="pill-title">{{item.label}}</text>
+                <text class="pill-meta">{{item.dateTimeText}} · {{item.note || '没有备注'}}</text>
+              </view>
+            </view>
+          </view>
+          <view wx:else class="empty-card">
+            <text class="empty-title">还没有心情记录</text>
+            <text class="empty-desc">写一条很短的话也可以。</text>
+          </view>
+        </block>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view wx:if="{{giftLedgerSearchVisible}}" class="gift-search-mask" bindtap="closeGiftLedgerSearch">
+    <view class="gift-search-dialog" catchtap="stopGiftLedgerSearchEvent">
+      <view class="gift-search-head">
+        <view>
+          <text class="gift-search-title">搜索礼金账本</text>
+          <text class="gift-search-subtitle">输入一个字也能快速找到对应词条</text>
+        </view>
+        <button class="gift-search-close" catchtap="closeGiftLedgerSearch">×</button>
+      </view>
+      <view class="gift-search-input-wrap">
+        <view class="gift-search-lens"></view>
+        <input
+          class="gift-search-input"
+          value="{{giftLedgerSearchKeyword}}"
+          placeholder="搜索姓名、事项、方向、备注、金额或日期"
+          placeholder-class="search-placeholder"
+          focus="{{giftLedgerSearchVisible}}"
+          confirm-type="search"
+          bindinput="onGiftLedgerSearchInput"
+        />
+      </view>
+      <text class="gift-search-hint">{{giftLedgerSearchHint}}</text>
+      <scroll-view wx:if="{{giftLedgerSearchResults.length}}" class="gift-search-results" scroll-y style="height: {{giftLedgerSearchResultsHeight}}rpx;">
+        <view
+          wx:for="{{giftLedgerSearchResults}}"
+          wx:key="id"
+          class="gift-search-result {{item.kind}} tone-{{item.toneClass}}"
+          data-id="{{item.id}}"
+          data-anchor="{{item.anchorId}}"
+          data-kind="{{item.kind}}"
+          data-direction="{{item.direction}}"
+          bindtap="locateGiftLedgerSearchResult"
+        >
+          <view class="gift-search-result-main">
+            <text class="gift-search-result-title">{{item.title}}</text>
+            <view class="gift-search-result-meta">
+              <text>{{item.amountText}} · {{item.date}}</text>
+              <text wx:if="{{item.note}}"> · {{item.note}}</text>
+            </view>
+          </view>
+          <view class="ledger-row-badges">
+            <text class="ledger-direction-badge {{item.direction}}">{{item.directionText}}</text>
+            <text class="ledger-kind-badge {{item.kind}}">{{item.kindLabel}}</text>
+          </view>
+          <text class="gift-search-result-arrow">›</text>
+        </view>
+      </scroll-view>
+      <view wx:elif="{{giftLedgerSearchKeyword}}" class="gift-search-empty">
+        <text class="gift-search-empty-title">没有匹配的词条</text>
+        <text class="gift-search-empty-desc">换一个姓名、事项或日期试试</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{giftLedgerFormVisible}}" class="gift-ledger-mask" bindtap="closeGiftLedgerForm">
+    <view
+      class="gift-ledger-sheet"
+      style="bottom: {{giftKeyboardHeight}}px; max-height: {{giftFormMaxHeight}}px;"
+      catchtap="stopGiftFormEvent"
+    >
+      <view class="gift-ledger-sheet-head">
+        <view>
+          <text class="gift-ledger-sheet-title">
+            {{giftLedgerEditingId ? '编辑礼簿记录' : (giftLedgerDirection === 'received' ? '添加收礼记录' : '添加送礼记录')}}
+          </text>
+          <text class="gift-ledger-sheet-desc">
+            {{giftLedgerEditingId
+              ? '修改后会同步更新联系人往来时间线，不会新增重复账目。'
+              : (giftLedgerDirection === 'received'
+              ? '记录别人送给你的礼金，并同步进入联系人往来时间线。'
+              : '记录你送给别人的礼金，并同步进入联系人往来时间线。')}}
+          </text>
+        </view>
+        <button class="gift-ledger-sheet-close" catchtap="closeGiftLedgerForm">×</button>
+      </view>
+      <scroll-view class="gift-ledger-sheet-scroll" scroll-y style="height: {{giftFormScrollHeight}}px;">
+        <view class="gift-ledger-form gift-ledger-sheet-form">
+          <view class="gift-form-kind-row">
+            <button class="gift-form-kind {{giftLedgerFormKind === 'happy' ? 'is-active happy' : ''}}" data-kind="happy" bindtap="switchGiftLedgerFormKind">
+              <image class="gift-form-kind-icon" src="/assets/ui-icons/gift-happy.png" mode="aspectFit"></image>
+              <text>喜事</text>
+            </button>
+            <button class="gift-form-kind {{giftLedgerFormKind === 'sad' ? 'is-active sad' : ''}}" data-kind="sad" bindtap="switchGiftLedgerFormKind">
+              <image class="gift-form-kind-icon" src="/assets/ui-icons/gift-sad.png" mode="aspectFit"></image>
+              <text>憾事</text>
+            </button>
+          </view>
+          <input class="gift-form-input" value="{{giftContactName}}" placeholder="联系人姓名" placeholder-class="form-placeholder" adjust-position="{{false}}" confirm-type="next" bindkeyboardheightchange="onGiftFormKeyboardHeightChange" bindinput="onGiftContactNameInput" />
+          <input class="gift-form-input" value="{{giftContactRelation}}" placeholder="关系，如发小 / 同事" placeholder-class="form-placeholder" adjust-position="{{false}}" confirm-type="next" bindkeyboardheightchange="onGiftFormKeyboardHeightChange" bindinput="onGiftContactRelationInput" />
+          <input class="gift-form-input" value="{{giftTitle}}" placeholder="事项，可不填" placeholder-class="form-placeholder" adjust-position="{{false}}" confirm-type="next" bindkeyboardheightchange="onGiftFormKeyboardHeightChange" bindinput="onGiftTitleInput" />
+          <view class="gift-form-grid">
+            <input class="gift-form-input" type="digit" value="{{giftAmount}}" placeholder="金额" placeholder-class="form-placeholder" adjust-position="{{false}}" bindkeyboardheightchange="onGiftFormKeyboardHeightChange" bindinput="onGiftAmountInput" />
+            <picker mode="date" value="{{giftDate}}" bindchange="onGiftDateChange">
+              <view class="gift-form-input gift-date-value">{{giftDate || '选择日期'}}</view>
+            </picker>
+          </view>
+          <input class="gift-form-input" value="{{giftNote}}" placeholder="备注，可不填" placeholder-class="form-placeholder" adjust-position="{{false}}" confirm-type="done" bindkeyboardheightchange="onGiftFormKeyboardHeightChange" bindinput="onGiftNoteInput" />
+          <button class="form-button gift-save-button" bindtap="addGiftLedgerFromForm">{{giftLedgerSaveLabel}}</button>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <floating-tabbar
+    active="records"
+    custom-create="{{viewTab === 'gifts' && (giftSubTab === 'sent' || giftSubTab === 'received') && growth.isGiftUnlocked}}"
+    bind:create="openGiftLedgerForm"
+  />
+</view>

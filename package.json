@@ -1,0 +1,23 @@
+{
+  "name": "miniprogram-ts-less-quickstart",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "check:types": "npx --yes -p typescript tsc --noEmit --skipLibCheck",
+    "check:quality": "node tools/check-project-quality.js",
+    "check:cloudbase": "node tools/check-cloudbase-setup.js",
+    "check:sync-revision": "node tools/check-sync-revision.js",
+    "check:sync-merge": "npx --yes -p tsx tsx tools/check-sync-merge.js",
+    "check:reminder": "node tools/check-reminder-schedule.js",
+    "check:full": "npm run check:types && npm run check:quality && npm run check:cloudbase && npm run check:sync-revision && npm run check:sync-merge && npm run check:reminder"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "tdesign-miniprogram": "^1.10.1"
+  },
+  "devDependencies": {
+    "miniprogram-api-typings": "^2.8.3-1"
+  }
+}

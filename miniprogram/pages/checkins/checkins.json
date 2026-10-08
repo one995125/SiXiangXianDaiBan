@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "计划打卡与每日目标",
+  "usingComponents": {
+    "floating-tabbar": "/components/floating-tabbar/floating-tabbar",
+    "reminder-renew-prompt": "/components/reminder-renew-prompt/reminder-renew-prompt"
+  }
+}

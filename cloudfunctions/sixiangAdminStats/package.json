@@ -1,0 +1,9 @@
+{
+  "name": "sixiang-admin-stats",
+  "version": "1.0.0",
+  "description": "记得管理员用户与操作统计云函数",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

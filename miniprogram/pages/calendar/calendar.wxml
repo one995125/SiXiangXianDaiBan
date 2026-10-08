@@ -1,0 +1,125 @@
+<view class="desk-page overview-page">
+  <scroll-view class="desk-scroll" scroll-y>
+    <view class="desk-content" style="padding-top: {{contentTopPadding}}px;">
+      <view class="desk-header">
+        <view>
+          <text class="desk-title">总览</text>
+          <text class="desk-subtitle">{{overview.todayLabel}} · 记录、计划和节点</text>
+        </view>
+      </view>
+
+      <view class="paper-sheet overview-sheet">
+        <view class="overview-summary-list">
+          <view
+            wx:for="{{overview.metricCards}}"
+            wx:key="key"
+            class="overview-summary-row tone-{{item.tone}}"
+            data-target="{{item.target}}"
+            data-type="{{item.targetType}}"
+            bindtap="openTarget"
+          >
+            <view class="overview-summary-left">
+              <view class="overview-summary-marker-wrap">
+                <view class="overview-summary-marker"></view>
+              </view>
+              <text class="overview-summary-label">{{item.label}}</text>
+            </view>
+            <view class="overview-summary-value-row">
+              <text class="overview-summary-value {{item.valueClass}}">{{item.value}}</text>
+              <text wx:if="{{item.unit}}" class="overview-summary-unit">{{item.unit}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="overview-calendar-panel">
+          <view class="section-head overview-calendar-head">
+            <text class="section-title">日历</text>
+            <text class="section-note">{{calendarView.monthLabel}}</text>
+          </view>
+
+          <view class="overview-calendar-card">
+            <view class="overview-month-switch">
+              <button class="overview-month-arrow" data-offset="-1" aria-label="上一个月" bindtap="switchMonth">‹</button>
+              <text class="overview-month-title">{{calendarView.monthLabel}}</text>
+              <button class="overview-month-arrow" data-offset="1" aria-label="下一个月" bindtap="switchMonth">›</button>
+            </view>
+            <view class="overview-weekday-row">
+              <text wx:for="{{weekdays}}" wx:key="*this">{{item}}</text>
+            </view>
+            <view class="overview-day-grid">
+              <view
+                wx:for="{{calendarView.days}}"
+                wx:key="date"
+                class="overview-day-cell {{item.inMonth ? '' : 'is-muted'}} {{item.isSelected ? 'is-selected' : ''}} {{item.isToday ? 'is-today' : ''}}"
+                data-date="{{item.date}}"
+                bindtap="selectDate"
+              >
+                <text class="overview-day-number">{{item.day}}</text>
+                <view class="overview-marker-row">
+                  <text
+                    wx:for="{{item.markerTones}}"
+                    wx:for-item="tone"
+                    wx:key="*this"
+                    class="overview-marker tone-{{tone}}"
+                  ></text>
+                </view>
+              </view>
+            </view>
+          </view>
+
+          <view class="overview-calendar-detail">
+            <view class="overview-calendar-detail-head">
+              <view>
+                <text class="overview-calendar-date">{{calendarView.selectedDateTitle || selectedDateLabel}}</text>
+                <text class="overview-calendar-summary">{{calendarView.selectedSummaryText}}</text>
+              </view>
+            </view>
+
+            <view wx:if="{{calendarView.selectedRecords.length}}" class="pill-list overview-calendar-records">
+              <view
+                wx:for="{{calendarView.selectedRecords}}"
+                wx:key="id"
+                class="pill-row tone-{{item.bubbleTone}} {{item.isDone || item.isCheckinDone ? 'is-done' : ''}}"
+                data-id="{{item.id}}"
+                bindtap="openRecordDetail"
+              >
+                <view class="bubble tone-{{item.bubbleTone}}">
+                  <image wx:if="{{item.designIconAsset}}" class="bubble-icon-image" src="{{item.designIconAsset}}" mode="aspectFit"></image>
+                  <text wx:else>{{item.designIcon}}</text>
+                </view>
+                <view class="pill-main">
+                  <text class="pill-title">{{item.title}}</text>
+                  <text wx:if="{{item.isRecurring}}" class="pill-meta">{{item.recurrenceText}} · {{item.progressText}}</text>
+                  <text wx:elif="{{item.type === 'anniversary'}}" class="pill-meta">{{item.category}} · {{item.relativeText}}</text>
+                  <text wx:else class="pill-meta">{{item.category}} · {{item.type === 'todo' && item.deadlineText ? item.deadlineText : item.timeLabel}}</text>
+                </view>
+                <button
+                  wx:if="{{!item.canPin}}"
+                  class="pill-action {{item.isDone || item.isCheckinDone ? 'is-done' : ''}}"
+                  data-id="{{item.id}}"
+                  disabled="{{item.isDone || item.isCheckinDone || (item.isRecurring && !item.isCheckinDue)}}"
+                  aria-label="完成事项"
+                  catchtap="checkInCalendarRecord"
+                ></button>
+                <text wx:else class="arrow-text">›</text>
+              </view>
+            </view>
+            <view wx:else class="empty-card overview-calendar-empty">
+              <text class="empty-title">这天还没有记录</text>
+              <text class="empty-desc">新增提醒或计划后，会按日期出现在这里。</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <reminder-renew-prompt
+    visible="{{!!renewReminderRecordId}}"
+    title="{{renewReminderTitle}}"
+    busy="{{renewReminderBusy}}"
+    bindconfirm="renewNextReminder"
+    binddismiss="dismissRenewReminder"
+  />
+  <floating-tabbar active="calendar" />
+</view>

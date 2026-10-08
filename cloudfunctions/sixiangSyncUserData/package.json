@@ -1,0 +1,9 @@
+{
+  "name": "sixiang-sync-user-data",
+  "version": "1.0.0",
+  "description": "记得业务数据同步云函数",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

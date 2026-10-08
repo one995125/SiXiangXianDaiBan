@@ -1,0 +1,326 @@
+page {
+  background: #f8f0e3;
+}
+
+.pet-page,
+.pet-scroll {
+  min-height: 100vh;
+}
+
+.pet-page {
+  color: #17152d;
+  background:
+    radial-gradient(circle at 14rpx 14rpx, rgba(139, 119, 98, 0.09) 2rpx, transparent 2rpx) 0 0 / 26rpx 26rpx,
+    linear-gradient(180deg, #f9eddd 0%, #f7f2e8 58%, #f2e9e4 100%);
+}
+
+.pet-content {
+  box-sizing: border-box;
+  min-height: 100vh;
+  padding-right: 32rpx;
+  padding-bottom: calc(72rpx + env(safe-area-inset-bottom));
+  padding-left: 32rpx;
+}
+
+.pet-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 104rpx;
+  margin-bottom: 24rpx;
+}
+
+.pet-back,
+.pet-topbar-spacer {
+  width: 72rpx;
+  height: 72rpx;
+}
+
+.pet-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border: 2rpx solid rgba(116, 107, 130, 0.16);
+  border-radius: 999rpx;
+  background: rgba(255, 253, 247, 0.88);
+  color: #826ee1;
+  font-size: 56rpx;
+  line-height: 1;
+}
+
+.pet-heading {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.pet-title {
+  font-size: 40rpx;
+  font-weight: 800;
+  line-height: 52rpx;
+}
+
+.pet-subtitle {
+  color: #746b82;
+  font-size: 21rpx;
+  line-height: 30rpx;
+}
+
+.pet-scene-card {
+  position: relative;
+  overflow: hidden;
+  height: 600rpx;
+  border: 2rpx solid rgba(111, 95, 82, 0.12);
+  border-radius: 36rpx;
+  background: #eadfcd;
+}
+
+.pet-home-image,
+.pet-scene-soften {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.pet-scene-soften {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 250, 242, 0.13));
+}
+
+.pet-level-pill {
+  position: absolute;
+  top: 24rpx;
+  left: 24rpx;
+  z-index: 2;
+  padding: 10rpx 18rpx;
+  border: 2rpx solid rgba(129, 108, 191, 0.18);
+  border-radius: 999rpx;
+  background: rgba(255, 253, 249, 0.88);
+  color: #6550bd;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.pet-character {
+  position: absolute;
+  right: 50%;
+  bottom: 80rpx;
+  z-index: 2;
+  width: 360rpx;
+  height: 360rpx;
+  transform: translateX(50%);
+  filter: drop-shadow(0 18rpx 22rpx rgba(78, 61, 93, 0.14));
+}
+
+.pet-speech {
+  position: absolute;
+  right: 24rpx;
+  bottom: 22rpx;
+  left: 24rpx;
+  z-index: 3;
+  box-sizing: border-box;
+  padding: 16rpx 22rpx;
+  border-radius: 22rpx;
+  background: rgba(255, 253, 249, 0.9);
+  color: #5e556b;
+  font-size: 23rpx;
+  line-height: 34rpx;
+  text-align: center;
+}
+
+.pet-progress-card,
+.pet-roadmap-card,
+.pet-locked {
+  margin-top: 24rpx;
+  padding: 28rpx;
+  border: 2rpx solid rgba(111, 95, 82, 0.12);
+  border-radius: 28rpx;
+  background: rgba(255, 253, 248, 0.9);
+}
+
+.pet-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.pet-card-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 800;
+  line-height: 40rpx;
+}
+
+.pet-card-caption {
+  display: block;
+  margin-top: 4rpx;
+  color: #746b82;
+  font-size: 22rpx;
+  line-height: 30rpx;
+}
+
+.pet-exp {
+  color: #7964d8;
+  font-size: 24rpx;
+  font-weight: 800;
+  line-height: 40rpx;
+}
+
+.pet-progress-track {
+  overflow: hidden;
+  height: 16rpx;
+  margin-top: 22rpx;
+  border-radius: 999rpx;
+  background: #eee8f4;
+}
+
+.pet-progress-value {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #a995eb, #6fcbb4);
+  transition: width 240ms ease;
+}
+
+.pet-checkin,
+.pet-plan-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 76rpx;
+  margin-top: 24rpx;
+  border-radius: 999rpx;
+  background: #806be0;
+  color: #fff;
+  font-size: 25rpx;
+  font-weight: 700;
+  line-height: 76rpx;
+}
+
+.pet-checkin::after,
+.pet-plan-button::after {
+  border: 0;
+}
+
+.pet-checkin.is-done {
+  background: #e8f4ed;
+  color: #4aa68b;
+}
+
+.pet-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16rpx;
+  margin-top: 24rpx;
+}
+
+.pet-stat {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 120rpx;
+  border: 2rpx solid rgba(111, 95, 82, 0.1);
+  border-radius: 24rpx;
+  background: rgba(255, 253, 248, 0.86);
+}
+
+.pet-stat-value {
+  color: #6d59c9;
+  font-size: 36rpx;
+  font-weight: 800;
+  line-height: 44rpx;
+}
+
+.pet-stat-label {
+  color: #746b82;
+  font-size: 21rpx;
+  line-height: 30rpx;
+}
+
+.pet-roadmap-row {
+  display: flex;
+  align-items: center;
+  min-height: 92rpx;
+  margin-top: 12rpx;
+  padding: 0 18rpx;
+  border-radius: 22rpx;
+  background: #f6f2f4;
+  opacity: 0.58;
+}
+
+.pet-roadmap-row.is-reached {
+  background: #f1eefc;
+  opacity: 1;
+}
+
+.pet-roadmap-dot {
+  width: 16rpx;
+  height: 16rpx;
+  margin-right: 16rpx;
+  border: 5rpx solid #d7cdea;
+  border-radius: 999rpx;
+  background: #fff;
+}
+
+.is-reached .pet-roadmap-dot {
+  border-color: #806be0;
+}
+
+.pet-roadmap-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.pet-roadmap-title {
+  font-size: 24rpx;
+  font-weight: 700;
+  line-height: 34rpx;
+}
+
+.pet-roadmap-desc {
+  color: #746b82;
+  font-size: 21rpx;
+  line-height: 30rpx;
+}
+
+.pet-locked {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding-top: 64rpx;
+  padding-bottom: 64rpx;
+  text-align: center;
+}
+
+.pet-locked-orb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 132rpx;
+  height: 132rpx;
+  border-radius: 46% 54% 51% 49%;
+  background: linear-gradient(145deg, #fff6d8, #ddd3fb);
+  color: #7964d8;
+  font-size: 42rpx;
+  font-weight: 800;
+}
+
+.pet-locked-title {
+  margin-top: 24rpx;
+  font-size: 32rpx;
+  font-weight: 800;
+}
+
+.pet-locked-desc {
+  max-width: 540rpx;
+  margin-top: 12rpx;
+  color: #746b82;
+  font-size: 23rpx;
+  line-height: 36rpx;
+}
+
+.pet-plan-button {
+  width: 100%;
+}

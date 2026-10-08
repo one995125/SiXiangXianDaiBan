@@ -1,0 +1,988 @@
+@import '../../styles/design-tokens.less';
+
+.today-page .desk-header {
+  align-items: flex-start;
+  min-height: 174rpx;
+  padding: @space-1 0 @space-4;
+  box-sizing: border-box;
+}
+
+// 日期卡只包裹今日信息，保留页面背景留白，避免与下方内容形成重卡片堆叠。
+.today-date-card {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 100%;
+  padding: 20rpx @space-4;
+  box-sizing: border-box;
+  border: 2rpx solid rgba(225, 214, 199, 0.74);
+  border-radius: @radius-card;
+  background: rgba(255, 253, 247, 0.72);
+  box-shadow: none;
+}
+
+// 小暖从纪念日纸张右上方探出，下半部分自然落入白底；整组点击进入计划页。
+.today-companion-preview {
+  position: absolute;
+  top: -178rpx;
+  right: 8rpx;
+  z-index: 3;
+  width: 270rpx;
+  height: 252rpx;
+  transition: opacity 120ms ease;
+  transform-origin: 50% 100%;
+}
+
+.today-companion-preview--pressed {
+  opacity: 0.82;
+}
+
+.today-companion-preview-image {
+  display: block;
+  width: 252rpx;
+  height: 252rpx;
+}
+
+@media (max-width: 350px) {
+  .today-companion-preview {
+    top: -154rpx;
+    right: 6rpx;
+    width: 226rpx;
+    height: 212rpx;
+  }
+
+  .today-companion-preview-image {
+    width: 212rpx;
+    height: 212rpx;
+  }
+
+}
+
+// 宽屏设备上适度放大小暖，但锚点始终贴住纪念日纸张上沿，
+// 不侵入系统胶囊，也不改变用户已经确认的叠放关系。
+@media (min-width: 400px) {
+  .today-companion-preview {
+    top: -190rpx;
+    right: 2rpx;
+    width: 292rpx;
+    height: 274rpx;
+  }
+
+  .today-companion-preview-image {
+    width: 274rpx;
+    height: 274rpx;
+  }
+
+  .paper-sheet--with-companion .today-anniversary-head {
+    padding-right: 258rpx;
+  }
+}
+
+.today-title-row {
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+}
+
+// 长日期在窄屏或大字体模式下保持单行省略，星期标签始终完整显示。
+.today-title-row .desk-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.weekday-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: @space-2;
+  min-width: 62rpx;
+  height: 34rpx;
+  padding: 0 @space-2;
+  box-sizing: border-box;
+  border: 2rpx solid rgba(133, 119, 221, 0.14);
+  border-radius: @radius-pill;
+  background: rgba(240, 234, 255, 0.92);
+  color: @color-violet;
+  font-size: 22rpx;
+  font-weight: 800;
+  line-height: 34rpx;
+}
+
+.today-anniversary-panel {
+  margin-bottom: @space-4;
+}
+
+.today-anniversary-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 34rpx;
+  margin: 0 4rpx 12rpx;
+}
+
+// 小暖的脚部落入纪念日白底时，标题栏主动让出右上区域。
+.paper-sheet--with-companion .today-anniversary-head {
+  box-sizing: border-box;
+  padding-right: 238rpx;
+}
+
+@media (max-width: 350px) {
+  // 窄屏使用缩小后的宠物尺寸，释放更多标题可用宽度。
+  .paper-sheet--with-companion .today-anniversary-head {
+    padding-right: 202rpx;
+  }
+}
+
+.today-anniversary-head-title,
+.today-anniversary-head-more {
+  display: block;
+}
+
+.today-anniversary-head-title {
+  color: @color-ink;
+  font-size: 26rpx;
+  font-weight: 900;
+  line-height: 34rpx;
+}
+
+.today-anniversary-head-more {
+  padding: 0 12rpx;
+  border-radius: @radius-pill;
+  background: rgba(133, 119, 221, 0.08);
+  color: @color-violet;
+  font-size: 21rpx;
+  font-weight: 800;
+  line-height: 30rpx;
+}
+
+.today-anniversary-list {
+  display: flex;
+  flex-direction: column;
+  gap: @space-2;
+}
+
+// 纪念日分享只提供通用邀请，不展示任何具体纪念日内容。
+.today-anniversary-share-strip {
+  display: flex;
+  align-items: center;
+  min-height: 64rpx;
+  margin-top: @space-2;
+  padding-left: @space-3;
+  box-sizing: border-box;
+  border: 2rpx solid rgba(225, 214, 199, 0.66);
+  border-radius: @radius-pill;
+  background: rgba(255, 248, 235, 0.68);
+}
+
+.today-anniversary-share-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.today-anniversary-share-icon {
+  flex: none;
+  display: block;
+  width: 30rpx;
+  height: 30rpx;
+  margin-right: @space-2;
+  opacity: 0.76;
+}
+
+.today-anniversary-share-text {
+  min-width: 0;
+  overflow: hidden;
+  color: @color-text-secondary;
+  font-size: 22rpx;
+  line-height: 30rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.today-anniversary-share-button {
+  flex: none;
+  min-width: 112rpx;
+  height: 64rpx;
+  margin-left: @space-2;
+  padding: 0 @space-3;
+  border-radius: @radius-pill;
+  background: transparent;
+  color: @color-violet;
+  font-size: 22rpx;
+  font-weight: 800;
+  line-height: 64rpx;
+}
+
+.today-anniversary-share-button::after {
+  border: 0;
+}
+
+.today-anniversary-row {
+  display: flex;
+  align-items: center;
+  min-height: 104rpx;
+  padding: @space-2 @space-3;
+  box-sizing: border-box;
+  border: 2rpx solid @color-border;
+  border-radius: @radius-row;
+  background: @color-surface;
+  box-shadow: none;
+}
+
+.today-anniversary-row.tone-coral {
+  border-color: rgba(228, 111, 98, 0.18);
+  background: @tone-coral;
+}
+
+.today-anniversary-row.tone-lagoon {
+  border-color: rgba(47, 154, 145, 0.18);
+  background: @tone-lagoon;
+}
+
+.today-anniversary-row.tone-violet {
+  border-color: rgba(133, 119, 221, 0.16);
+  background: @tone-violet;
+}
+
+.today-anniversary-row.tone-blue {
+  border-color: rgba(91, 130, 221, 0.17);
+  background: @tone-blue;
+}
+
+.today-anniversary-row.tone-amber {
+  border-color: rgba(189, 138, 43, 0.18);
+  background: @tone-amber;
+}
+
+.today-anniversary-row.tone-mint {
+  border-color: rgba(74, 164, 112, 0.17);
+  background: @tone-mint;
+}
+
+.today-anniversary-row.tone-rose {
+  border-color: rgba(223, 103, 141, 0.17);
+  background: @tone-rose;
+}
+
+.today-anniversary-row.tone-sky {
+  border-color: rgba(78, 148, 174, 0.17);
+  background: @tone-sky;
+}
+
+.today-anniversary-row.tone-peach {
+  border-color: rgba(207, 122, 78, 0.17);
+  background: @tone-peach;
+}
+
+.today-anniversary-icon-shell,
+.today-anniversary-empty-icon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 18rpx;
+  background: transparent;
+  color: #e46f62;
+  box-shadow: none;
+}
+
+.today-anniversary-icon-shell.is-countdown {
+  color: #bd8a2b;
+}
+
+.today-anniversary-row.tone-coral .today-anniversary-icon-shell { background: #ffe5dc; }
+.today-anniversary-row.tone-lagoon .today-anniversary-icon-shell { background: #dff3ee; }
+.today-anniversary-row.tone-blue .today-anniversary-icon-shell { background: #e1ecff; }
+.today-anniversary-row.tone-violet .today-anniversary-icon-shell { background: #e9e2ff; }
+.today-anniversary-row.tone-amber .today-anniversary-icon-shell { background: #ffedbd; }
+.today-anniversary-row.tone-mint .today-anniversary-icon-shell { background: #ddf3e6; }
+.today-anniversary-row.tone-rose .today-anniversary-icon-shell { background: #f9dfe8; }
+.today-anniversary-row.tone-sky .today-anniversary-icon-shell { background: #dceff5; }
+.today-anniversary-row.tone-peach .today-anniversary-icon-shell { background: #ffe2d1; }
+
+.today-anniversary-row.tone-lagoon .today-anniversary-value {
+  color: #2f9a91;
+}
+
+.today-anniversary-row.tone-coral .today-anniversary-value {
+  color: #e46f62;
+}
+
+.today-anniversary-row.tone-violet .today-anniversary-value {
+  color: #8577dd;
+}
+
+.today-anniversary-row.tone-blue .today-anniversary-value {
+  color: #5b82dd;
+}
+
+.today-anniversary-row.tone-amber .today-anniversary-value {
+  color: #a97821;
+}
+
+.today-anniversary-row.tone-mint .today-anniversary-value {
+  color: #3f9162;
+}
+
+.today-anniversary-row.tone-rose .today-anniversary-value {
+  color: #cf5f83;
+}
+
+.today-anniversary-row.tone-sky .today-anniversary-value {
+  color: #41849e;
+}
+
+.today-anniversary-row.tone-peach .today-anniversary-value {
+  color: #bd6940;
+}
+
+.today-anniversary-icon-image,
+.today-anniversary-empty-image {
+  display: block;
+  width: 52rpx;
+  height: 52rpx;
+  opacity: 0.92;
+}
+
+.today-anniversary-main {
+  flex: 1;
+  min-width: 0;
+  margin-left: @space-3;
+}
+
+.today-anniversary-title,
+.today-anniversary-date,
+.today-anniversary-prefix,
+.today-anniversary-value,
+.today-anniversary-unit {
+  display: block;
+}
+
+.today-anniversary-title {
+  overflow: hidden;
+  color: @color-ink;
+  font-size: 28rpx;
+  font-weight: 900;
+  line-height: 38rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.today-anniversary-date {
+  margin-top: 6rpx;
+  color: @color-text-secondary;
+  font-size: 23rpx;
+  line-height: 30rpx;
+}
+
+.today-anniversary-metric {
+  flex: none;
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  min-width: 174rpx;
+  margin-left: 12rpx;
+  overflow: visible;
+  white-space: nowrap;
+}
+
+.today-anniversary-prefix {
+  flex: none;
+  margin-right: 7rpx;
+  color: @color-text-secondary;
+  font-size: 22rpx;
+  font-weight: 800;
+  line-height: 32rpx;
+}
+
+.today-anniversary-value {
+  flex: none;
+  color: #e46f62;
+  font-size: 52rpx;
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 56rpx;
+}
+
+.today-anniversary-unit {
+  flex: none;
+  margin-left: 7rpx;
+  color: @color-text-secondary;
+  font-size: 21rpx;
+  font-weight: 800;
+  line-height: 32rpx;
+}
+
+.today-anniversary-metric.is-fit-3 .today-anniversary-value {
+  font-size: 46rpx;
+  line-height: 52rpx;
+}
+
+.today-anniversary-metric.is-compact .today-anniversary-value {
+  font-size: 39rpx;
+  line-height: 46rpx;
+}
+
+.today-anniversary-metric.is-tiny .today-anniversary-value {
+  font-size: 36rpx;
+  line-height: 44rpx;
+}
+
+.today-anniversary-metric.is-micro .today-anniversary-value {
+  font-size: 29rpx;
+  line-height: 36rpx;
+}
+
+.today-anniversary-metric.is-tiny .today-anniversary-prefix,
+.today-anniversary-metric.is-micro .today-anniversary-prefix {
+  font-size: 22rpx;
+}
+
+.today-anniversary-metric.is-tiny .today-anniversary-unit,
+.today-anniversary-metric.is-micro .today-anniversary-unit {
+  font-size: 21rpx;
+}
+
+.today-anniversary-empty {
+  display: flex;
+  align-items: center;
+  min-height: 118rpx;
+  margin-bottom: 22rpx;
+  padding: 18rpx;
+  box-sizing: border-box;
+  border: 2rpx solid @color-border;
+  border-radius: @radius-card;
+  background: @color-surface;
+  box-shadow: none;
+}
+
+.today-anniversary-empty-icon {
+  color: #df776c;
+}
+
+.today-anniversary-empty-main {
+  flex: 1;
+  min-width: 0;
+  margin-left: 18rpx;
+}
+
+.today-anniversary-empty-title,
+.today-anniversary-empty-desc {
+  display: block;
+}
+
+.today-anniversary-empty-title {
+  color: @color-ink;
+  font-size: 28rpx;
+  font-weight: 900;
+  line-height: 36rpx;
+}
+
+.today-anniversary-empty-desc {
+  overflow: hidden;
+  margin-top: 6rpx;
+  color: @color-text-secondary;
+  font-size: 22rpx;
+  line-height: 28rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.today-anniversary-empty-action {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44rpx;
+  height: 44rpx;
+  margin-left: 14rpx;
+  border-radius: 50%;
+  background: @color-violet;
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 900;
+  line-height: 44rpx;
+  box-shadow: @shadow-floating;
+}
+
+.today-quadrant-panel {
+  margin-bottom: @space-4;
+  padding: 8rpx;
+  border: 2rpx solid @color-border;
+  border-radius: @radius-card;
+  background: rgba(255, 253, 247, 0.78);
+  box-shadow: none;
+}
+
+.today-quadrant-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, 236rpx);
+  overflow: hidden;
+  border-radius: 26rpx;
+  background: #fbf7ef;
+}
+
+.today-quadrant-card {
+  position: relative;
+  min-width: 0;
+  height: 236rpx;
+  padding: 16rpx;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: #fffdf8;
+}
+
+// 分割线跟随 Grid 的真实行高，不再按容器 50% 定位，避免某个象限内容较多时穿过文字。
+.today-quadrant-card:nth-child(1),
+.today-quadrant-card:nth-child(3) {
+  border-right: 2rpx solid rgba(47, 154, 145, 0.2);
+}
+
+.today-quadrant-card:nth-child(1),
+.today-quadrant-card:nth-child(2) {
+  border-bottom: 2rpx solid rgba(47, 154, 145, 0.2);
+}
+
+.today-quadrant-card::before {
+  content: '';
+  position: absolute;
+  top: 18rpx;
+  left: 16rpx;
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: #c8bfcf;
+}
+
+.today-quadrant-card.tone-urgent {
+  background: #fff7f3;
+}
+
+.today-quadrant-card.tone-plan {
+  background: #f1f9f7;
+}
+
+.today-quadrant-card.tone-quick {
+  background: #f4f7ff;
+}
+
+.today-quadrant-card.tone-later {
+  background: #f7f4ff;
+}
+
+.today-quadrant-card.tone-urgent::before {
+  background: #df776c;
+}
+
+.today-quadrant-card.tone-plan::before {
+  background: #56aa98;
+}
+
+.today-quadrant-card.tone-quick::before {
+  background: #6f91dc;
+}
+
+.today-quadrant-card.tone-later::before {
+  background: #9485de;
+}
+
+.today-quadrant-label {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: flex-start;
+}
+
+.today-quadrant-title-block {
+  flex: 1;
+  min-width: 0;
+  padding-left: 18rpx;
+}
+
+.today-quadrant-title,
+.today-quadrant-count,
+.today-quadrant-task-title,
+.today-quadrant-empty {
+  display: block;
+}
+
+.today-quadrant-title {
+  color: @color-ink;
+  font-size: 24rpx;
+  font-weight: 900;
+  line-height: 31rpx;
+}
+
+.today-quadrant-count {
+  flex: none;
+  min-width: 36rpx;
+  color: @color-ink;
+  font-size: 36rpx;
+  font-weight: 900;
+  line-height: 40rpx;
+  text-align: right;
+}
+
+.today-quadrant-count-wrap {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  // 数量与右侧滚动区域留出呼吸空间，避免贴边显得拥挤。
+  margin-right: 12rpx;
+}
+
+.today-quadrant-card.tone-urgent .today-quadrant-count {
+  color: #df6d62;
+}
+
+.today-quadrant-card.tone-plan .today-quadrant-count {
+  color: #2f9a91;
+}
+
+.today-quadrant-card.tone-quick .today-quadrant-count {
+  color: #5b82dd;
+}
+
+.today-quadrant-card.tone-later .today-quadrant-count {
+  color: #8577dd;
+}
+
+.today-quadrant-list {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  height: 144rpx;
+  margin-top: 8rpx;
+  overflow: hidden;
+}
+
+.today-quadrant-task {
+  display: flex;
+  align-items: center;
+  min-height: 48rpx;
+}
+
+.today-quadrant-task-title {
+  flex: 1;
+  min-width: 0;
+  color: @color-ink;
+  font-size: 24rpx;
+  font-weight: 800;
+  line-height: 30rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.today-quadrant-check {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48rpx;
+  height: 48rpx;
+  padding: 0;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: transparent;
+  font-size: 0;
+  line-height: 48rpx;
+  box-shadow: none;
+}
+
+.today-quadrant-check::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  width: 6rpx;
+  height: 6rpx;
+  border-radius: 50%;
+  background: #f07c76;
+  transform: translate(-50%, -50%);
+}
+
+.today-quadrant-check::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: auto;
+  bottom: auto;
+  left: 50%;
+  width: 28rpx;
+  height: 28rpx;
+  box-sizing: border-box;
+  border: 2rpx solid #57b9a5;
+  border-radius: 50%;
+  background: rgba(255, 253, 247, 0.94);
+  box-shadow: none;
+  transform: translate(-50%, -50%);
+}
+
+.today-quadrant-empty {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  min-height: 150rpx;
+  color: @color-text-secondary;
+  font-size: 23rpx;
+  line-height: 30rpx;
+}
+
+.today-checkin-panel {
+  margin: 2rpx 0 28rpx;
+  padding: 18rpx;
+  border: 2rpx solid rgba(133, 119, 221, 0.12);
+  border-radius: @radius-card;
+  background: rgba(253, 251, 246, 0.9);
+  box-shadow: none;
+}
+
+// 每日签到独立于周期计划完成状态：签到给小暖经验，底部保留轻量同行邀请。
+.today-plan-sign-card {
+  margin: 22rpx 0 20rpx;
+  padding: 18rpx 20rpx 20rpx;
+  box-sizing: border-box;
+  border: 2rpx solid rgba(133, 119, 221, 0.14);
+  border-radius: @radius-card;
+  background: rgba(255, 253, 247, 0.9);
+}
+
+.today-plan-sign-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14rpx;
+}
+
+.today-plan-sign-streak {
+  min-width: 0;
+  color: @color-violet;
+  font-size: 22rpx;
+  font-weight: 700;
+  line-height: 30rpx;
+}
+
+.today-plan-week-row {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8rpx;
+}
+
+.today-plan-week-cell {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+  color: @color-text-muted;
+}
+
+.today-plan-week-label {
+  font-size: 19rpx;
+  line-height: 26rpx;
+}
+
+.today-plan-week-day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46rpx;
+  height: 46rpx;
+  box-sizing: border-box;
+  border: 2rpx solid rgba(133, 119, 221, 0.1);
+  border-radius: 50%;
+  background: #faf7f1;
+  font-size: 22rpx;
+  line-height: 46rpx;
+}
+
+.today-plan-week-cell.is-checked .today-plan-week-day {
+  background: @tone-violet;
+  color: @color-violet;
+  font-weight: 800;
+}
+
+.today-plan-week-cell.is-today .today-plan-week-day {
+  border-color: @color-violet;
+  background: @color-violet;
+  color: #fff;
+}
+
+.today-plan-sign-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+  min-height: 62rpx;
+  margin-top: 16rpx;
+}
+
+.today-plan-sign-button {
+  flex: none;
+  min-width: 208rpx;
+  height: 62rpx;
+  margin: 0;
+  padding: 0 18rpx;
+  border-radius: @radius-pill;
+  background: @color-violet;
+  color: #fff;
+  font-size: 21rpx;
+  font-weight: 800;
+  line-height: 62rpx;
+  box-shadow: 0 8rpx 18rpx rgba(133, 119, 221, 0.16);
+}
+
+.today-plan-sign-button::after {
+  border: 0;
+}
+
+.today-plan-sign-button.is-done,
+.today-plan-sign-button.is-busy {
+  background: rgba(133, 119, 221, 0.1);
+  color: @color-text-muted;
+  box-shadow: none;
+  opacity: 1;
+}
+
+.today-plan-share-strip {
+  display: flex;
+  align-items: center;
+  min-height: 62rpx;
+  margin-top: 16rpx;
+  padding-left: 16rpx;
+  box-sizing: border-box;
+  border: 2rpx solid rgba(225, 214, 199, 0.66);
+  border-radius: @radius-pill;
+  background: rgba(255, 248, 235, 0.68);
+}
+
+.today-plan-share-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: @color-text-secondary;
+  font-size: 22rpx;
+  line-height: 30rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.today-plan-share-button {
+  flex: none;
+  min-width: 112rpx;
+  height: 62rpx;
+  margin-left: @space-2;
+  padding: 0 @space-3;
+  border-radius: @radius-pill;
+  background: transparent;
+  color: @color-violet;
+  font-size: 22rpx;
+  font-weight: 800;
+  line-height: 62rpx;
+}
+
+.today-plan-share-button::after {
+  border: 0;
+}
+
+.today-checkin-head {
+  margin: 0 0 14rpx;
+}
+
+.today-checkin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.today-checkin-row {
+  min-height: 104rpx;
+  padding: 14rpx 16rpx;
+}
+
+.today-checkin-main {
+  min-width: 0;
+}
+
+.today-checkin-progress-row {
+  display: flex;
+  align-items: center;
+  margin-top: 10rpx;
+}
+
+.today-checkin-progress-track {
+  flex: 1;
+  min-width: 0;
+  margin-top: 0;
+}
+
+.today-checkin-progress-text {
+  flex: none;
+  min-width: 76rpx;
+  margin-left: 14rpx;
+  color: #8577dd;
+  font-size: 22rpx;
+  font-weight: 900;
+  line-height: 28rpx;
+  text-align: right;
+}
+
+.today-checkin-row.tone-coral .today-checkin-progress-text { color: #d9665b; }
+.today-checkin-row.tone-lagoon .today-checkin-progress-text { color: #2f8f87; }
+.today-checkin-row.tone-blue .today-checkin-progress-text { color: #5278ca; }
+.today-checkin-row.tone-violet .today-checkin-progress-text { color: #786bc9; }
+.today-checkin-row.tone-amber .today-checkin-progress-text { color: #a97821; }
+.today-checkin-row.tone-mint .today-checkin-progress-text { color: #3f9162; }
+.today-checkin-row.tone-rose .today-checkin-progress-text { color: #cf5f83; }
+.today-checkin-row.tone-sky .today-checkin-progress-text { color: #41849e; }
+.today-checkin-row.tone-peach .today-checkin-progress-text { color: #bd6940; }
+
+.today-checkin-meta {
+  display: block;
+  overflow: hidden;
+  margin-top: 6rpx;
+  color: @color-text-secondary;
+  font-size: 22rpx;
+  line-height: 28rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.today-checkin-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56rpx;
+  margin-top: 14rpx;
+  border-radius: 18rpx;
+  background: rgba(133, 119, 221, 0.1);
+  color: #8577dd;
+  font-size: 23rpx;
+  font-weight: 800;
+  line-height: 30rpx;
+}
+
+.compact-list .pill-row {
+  min-height: 96rpx;
+}
+
+.arrow-text {
+  flex: none;
+  margin-left: 16rpx;
+  color: #c6bdca;
+  font-size: 44rpx;
+  line-height: 44rpx;
+}

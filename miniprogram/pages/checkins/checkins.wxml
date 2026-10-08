@@ -1,0 +1,136 @@
+<view class="desk-page goals-page">
+  <scroll-view class="desk-scroll" scroll-y>
+    <view class="desk-content" style="padding-top: {{contentTopPadding}}px;">
+      <view class="paper-sheet">
+        <view wx:if="{{!growth.isGiftUnlocked}}" class="growth-card paper-card">
+          <view class="growth-head">
+            <view>
+              <text class="growth-kicker">七日成长</text>
+              <text class="growth-title">成长进度 {{growth.progress}}/7</text>
+            </view>
+            <text class="growth-badge">礼簿待解锁</text>
+          </view>
+          <view class="growth-points">
+            <view wx:for="{{growth.progressPoints}}" wx:key="index" class="growth-point {{item.completed ? 'is-completed' : ''}}"><text>{{item.index}}</text></view>
+          </view>
+          <view class="growth-summary"><text>累计签到 {{growth.checkinCount}} 天</text><text>任务加速 {{growth.milestoneCount}}/3</text></view>
+          <button class="growth-checkin-button {{growth.isTodayChecked ? 'is-done' : ''}}" disabled="{{growth.isTodayChecked}}" bindtap="checkInGrowth">{{growth.isTodayChecked ? '今日已签到' : '今日签到'}}</button>
+          <view class="growth-task-list">
+            <view wx:for="{{growth.milestones}}" wx:key="id" class="growth-task {{item.completed ? 'is-completed' : ''}}" data-target="{{item.target}}" bindtap="openGrowthTask">
+              <view class="growth-task-status">{{item.completed ? '✓' : '＋'}}</view>
+              <view class="growth-task-main"><text class="growth-task-title">{{item.title}}</text><text class="growth-task-desc">{{item.desc}}</text></view>
+              <text wx:if="{{!item.completed}}" class="growth-task-arrow">›</text>
+            </view>
+          </view>
+          <view class="growth-share-copy">
+            <text class="growth-share-copy-title">一个人坚持，也很好。有人同行，会更有趣。</text>
+          </view>
+          <button class="growth-share-button" bindtap="generateGrowthPoster">生成同行邀请卡</button>
+          <text class="growth-share-note">分享不影响成长进度</text>
+          <text class="companion-preview-note">完成七日成长后，会有一位小伙伴来陪你坚持。</text>
+        </view>
+
+        <view wx:if="{{growth.isGiftUnlocked && companion.isAvailable}}" class="companion-card paper-card {{companionAnimating ? 'is-feeding' : ''}}">
+          <view class="companion-visual">
+            <view class="companion-glow"></view>
+            <image class="companion-image" src="{{companion.imageUrl}}" mode="aspectFit"></image>
+            <text wx:if="{{companionFeedback}}" class="companion-feedback">{{companionFeedback}}</text>
+          </view>
+          <view class="companion-main">
+            <view class="companion-title-row">
+              <view><text class="companion-name">小暖</text><text class="companion-level">Lv.{{companion.level}} · {{companion.stageName}}</text></view>
+              <button class="companion-home-button" bindtap="openCompanionHome">看看小家</button>
+            </view>
+            <view class="companion-progress-row">
+              <view class="companion-progress-track"><view class="companion-progress-fill" style="width: {{companion.progressPercent}}%;"></view></view>
+              <text class="companion-exp">{{companion.exp}} EXP</text>
+            </view>
+            <view class="companion-bottom">
+              <text class="companion-tip">{{companion.level === 3 ? '温暖相伴中' : '还差 ' + companion.remainingExp + ' 点升级'}}</text>
+              <button class="companion-checkin-button {{companion.isTodayChecked ? 'is-done' : ''}}" disabled="{{companion.isTodayChecked}}" bindtap="checkInCompanion">{{companion.isTodayChecked ? '今日已签到' : '签到 +5 EXP'}}</button>
+            </view>
+          </view>
+        </view>
+
+        <view class="period-tabs">
+          <button wx:for="{{periodTabs}}" wx:key="key" class="period-tab {{activePeriod === item.key ? 'is-active' : ''}}" data-period="{{item.key}}" bindtap="switchPeriod">{{item.label}}</button>
+        </view>
+
+        <block wx:if="{{activePeriod === 'day'}}">
+          <view class="section-head"><view class="section-title-line"><image class="section-title-icon" src="/assets/ui-icons/goal-daily.png" mode="aspectFit"></image><text class="section-title">今日计划</text></view><text class="section-note">{{center.dailyActions.length}}</text></view>
+          <view wx:if="{{center.dailyActions.length}}" class="pill-list">
+            <view wx:for="{{center.dailyActions}}" wx:key="id" class="pill-row goal-row tone-{{item.bubbleTone}} {{item.isCheckinDone || item.isDone ? 'is-done' : ''}}" data-id="{{item.id}}" bindtap="openRecordDetail">
+              <view class="bubble tone-{{item.bubbleTone}}"><image wx:if="{{item.designIconAsset}}" class="bubble-icon-image" src="{{item.designIconAsset}}" mode="aspectFit"></image><text wx:else>{{item.designIcon}}</text></view>
+              <view class="pill-main"><text class="pill-title">{{item.title}}</text><text class="goal-status-text">{{item.recurrenceType === 'none' ? item.statusText : item.recurrenceText}} · {{item.checkinStatusText}}</text></view>
+              <button class="pill-action {{item.isCheckinDone || item.isDone ? 'is-done' : ''}}" data-id="{{item.id}}" disabled="{{item.isCheckinDone || item.isDone || (item.recurrenceType !== 'none' && !item.isCheckinDue)}}" aria-label="完成打卡" catchtap="checkInRecord"></button>
+            </view>
+          </view>
+          <view wx:else class="empty-card"><text class="empty-title">今天没有待处理计划</text><text class="empty-desc">到期待办、当天周期计划和临时便签都会显示在这里。</text></view>
+        </block>
+
+        <block wx:if="{{activePeriod === 'week'}}">
+          <view class="section-head"><text class="section-title">每周计划</text><text class="section-note">{{center.weeklyItems.length}}</text></view>
+          <view wx:if="{{center.weeklyItems.length}}" class="pill-list">
+            <view wx:for="{{center.weeklyItems}}" wx:key="id" class="pill-row goal-row tone-{{item.bubbleTone}}" data-id="{{item.id}}" bindtap="openRecordDetail">
+              <view class="bubble tone-{{item.bubbleTone}}"><image class="bubble-icon-image" src="{{item.designIconAsset}}" mode="aspectFit"></image></view>
+              <view class="pill-main"><text class="pill-title">{{item.title}}</text><view class="goal-progress-row"><view class="progress-track goal-progress-track"><view class="progress-fill" style="width: {{item.progressPercent}}%;"></view></view><text class="goal-progress-text">{{item.progressText}}</text></view><text class="goal-status-text">{{item.recurrenceText}} · {{item.checkinStatusText}}</text></view>
+              <button class="pill-action {{item.isCheckinDone ? 'is-done' : ''}}" data-id="{{item.id}}" disabled="{{item.isCheckinDone || !item.isCheckinDue}}" aria-label="完成打卡" catchtap="checkInRecord"></button>
+            </view>
+          </view>
+          <view wx:else class="empty-card"><text class="empty-title">还没有每周计划</text><text class="empty-desc">选择周几后，每个选中日各打卡一次。</text></view>
+        </block>
+
+        <block wx:if="{{activePeriod === 'month'}}">
+          <view class="section-head"><text class="section-title">每月计划</text><text class="section-note">{{center.monthlyItems.length}}</text></view>
+          <view wx:if="{{center.monthlyItems.length}}" class="pill-list">
+            <view wx:for="{{center.monthlyItems}}" wx:key="id" class="pill-row goal-row tone-{{item.bubbleTone}}" data-id="{{item.id}}" bindtap="openRecordDetail">
+              <view class="bubble tone-{{item.bubbleTone}}"><image class="bubble-icon-image" src="{{item.designIconAsset}}" mode="aspectFit"></image></view>
+              <view class="pill-main"><text class="pill-title">{{item.title}}</text><text class="goal-status-text">{{item.recurrenceText}} · {{item.progressText}} · {{item.checkinStatusText}}</text></view>
+              <button class="pill-action {{item.isCheckinDone ? 'is-done' : ''}}" data-id="{{item.id}}" disabled="{{item.isCheckinDone || !item.isCheckinDue}}" aria-label="完成打卡" catchtap="checkInRecord"></button>
+            </view>
+          </view>
+          <view wx:else class="empty-card"><text class="empty-title">还没有每月计划</text><text class="empty-desc">计划只在每月指定日期开放打卡。</text></view>
+        </block>
+
+        <block wx:if="{{activePeriod === 'year'}}">
+          <view class="section-head"><text class="section-title">每年计划</text><text class="section-note">{{center.yearlyItems.length}}</text></view>
+          <view wx:if="{{center.yearlyItems.length}}" class="pill-list">
+            <view wx:for="{{center.yearlyItems}}" wx:key="id" class="pill-row goal-row tone-{{item.bubbleTone}}" data-id="{{item.id}}" bindtap="openRecordDetail">
+              <view class="bubble tone-{{item.bubbleTone}}"><image class="bubble-icon-image" src="{{item.designIconAsset}}" mode="aspectFit"></image></view>
+              <view class="pill-main"><text class="pill-title">{{item.title}}</text><text class="goal-status-text">{{item.recurrenceText}} · {{item.progressText}} · {{item.checkinStatusText}}</text></view>
+              <button class="pill-action {{item.isCheckinDone ? 'is-done' : ''}}" data-id="{{item.id}}" disabled="{{item.isCheckinDone || !item.isCheckinDue}}" aria-label="完成打卡" catchtap="checkInRecord"></button>
+            </view>
+          </view>
+          <view wx:else class="empty-card"><text class="empty-title">还没有每年计划</text><text class="empty-desc">适合年度体检、纪念行动和固定复盘。</text></view>
+        </block>
+
+        <view class="stats-card paper-card"><view wx:for="{{center.summaryCards}}" wx:key="label" class="stat-item"><text class="stat-value">{{item.value}}</text><text class="stat-label">{{item.label}}</text></view></view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view wx:if="{{growthPosterVisible}}" class="growth-poster-mask" bindtap="closeGrowthPoster" catchtouchmove="stopGrowthPosterEvent">
+    <view class="growth-poster-dialog" catchtap="stopGrowthPosterEvent">
+      <view class="growth-poster-head">
+        <view><text class="growth-poster-title">同行邀请卡</text><text class="growth-poster-subtitle">七日成长 · 朋友同行邀请</text></view>
+        <button class="growth-poster-close" bindtap="closeGrowthPoster">×</button>
+      </view>
+      <image class="growth-poster-preview" src="{{growthPosterPath}}" mode="widthFix"></image>
+      <view class="growth-poster-actions">
+        <button class="growth-poster-action is-secondary" bindtap="saveGrowthPoster">保存海报</button>
+        <button class="growth-poster-action is-primary" open-type="share">转发给朋友</button>
+      </view>
+      <text class="growth-poster-note">分享不会增加成长进度</text>
+    </view>
+  </view>
+
+  <canvas id="growthShareCanvas" type="2d" class="growth-share-canvas"></canvas>
+  <reminder-renew-prompt
+    visible="{{!!renewReminderRecordId}}"
+    title="{{renewReminderTitle}}"
+    busy="{{renewReminderBusy}}"
+    bindconfirm="renewNextReminder"
+    binddismiss="dismissRenewReminder"
+  />
+  <floating-tabbar active="checkins" />
+</view>

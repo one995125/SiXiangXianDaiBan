@@ -1,0 +1,225 @@
+<view class="desk-page today-page">
+  <scroll-view class="desk-scroll" scroll-y>
+    <view class="desk-content" style="padding-top: {{contentTopPadding}}px;">
+      <view class="desk-header">
+        <view class="today-date-card">
+          <view class="today-title-row">
+            <text class="desk-title">{{dashboard.dateTitle || dashboard.todayLabel}}</text>
+            <text class="weekday-pill">{{dashboard.weekdayLabel || '今天'}}</text>
+          </view>
+          <text class="desk-subtitle">☀ 记录，是对时间的温柔回应。</text>
+        </view>
+      </view>
+
+      <view class="paper-sheet {{companion.isAvailable ? 'paper-sheet--with-companion' : ''}}">
+        <view
+          wx:if="{{companion.isAvailable}}"
+          class="today-companion-preview"
+          hover-class="today-companion-preview--pressed"
+          aria-role="button"
+          aria-label="查看今日计划"
+          bindtap="openCheckins"
+        >
+          <image class="today-companion-preview-image" src="{{companion.imageUrl}}" mode="aspectFit"></image>
+        </view>
+        <view wx:if="{{dashboard.hasRecentReminders}}" class="today-anniversary-panel">
+          <view class="today-anniversary-head">
+            <text class="today-anniversary-head-title">纪念日</text>
+            <text wx:if="{{dashboard.anniversaryTotalCount > 3}}" class="today-anniversary-head-more" bindtap="openAnniversaryRecords">查看更多 ›</text>
+          </view>
+          <view class="today-anniversary-list">
+            <view
+              wx:for="{{dashboard.anniversaryMainCards}}"
+              wx:for-index="recordIndex"
+              wx:key="id"
+              class="today-anniversary-row tone-{{item.anniversaryTone}}"
+              data-id="{{item.id}}"
+              data-index="{{recordIndex}}"
+              data-count="{{dashboard.anniversaryTotalCount}}"
+              bindtap="openRecordDetail"
+              catchlongpress="openAnniversaryOrderMenu"
+            >
+              <view class="today-anniversary-icon-shell {{item.anniversaryMode === 'countdown' ? 'is-countdown' : 'is-elapsed'}}">
+                <image
+                  class="today-anniversary-icon-image"
+                  src="{{item.anniversaryMode === 'countdown' ? '/assets/ui-icons/anniversary-cake.png' : '/assets/ui-icons/anniversary-heart.png'}}"
+                  mode="aspectFit"
+                ></image>
+              </view>
+              <view class="today-anniversary-main">
+                <text class="today-anniversary-title">{{item.title}}</text>
+                <text class="today-anniversary-date">{{item.date}}</text>
+              </view>
+              <view class="today-anniversary-metric {{item.anniversaryMetricSizeClass}}">
+                <text wx:if="{{item.anniversaryMetricPrefix}}" class="today-anniversary-prefix">{{item.anniversaryMetricPrefix}}</text>
+                <text class="today-anniversary-value">{{item.anniversaryMetricValue}}</text>
+                <text wx:if="{{item.anniversaryMetricUnit}}" class="today-anniversary-unit">{{item.anniversaryMetricUnit}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="today-anniversary-share-strip">
+            <view class="today-anniversary-share-main">
+              <image class="today-anniversary-share-icon" src="/assets/ui-icons/anniversary-heart.png" mode="aspectFit"></image>
+              <text class="today-anniversary-share-text">和TA一起记录美好发生</text>
+            </view>
+            <button class="today-anniversary-share-button" open-type="share" data-share-scene="anniversary_companion">邀请TA</button>
+          </view>
+        </view>
+        <view wx:else class="today-anniversary-empty" bindtap="openCreateForm">
+          <view class="today-anniversary-empty-icon">
+            <image class="today-anniversary-empty-image" src="/assets/ui-icons/anniversary-heart.png" mode="aspectFit"></image>
+          </view>
+          <view class="today-anniversary-empty-main">
+            <text class="today-anniversary-empty-title">还没有纪念日</text>
+            <text class="today-anniversary-empty-desc">把生日、纪念日和重要日子放在这里。</text>
+          </view>
+          <text class="today-anniversary-empty-action">＋</text>
+        </view>
+
+        <view class="today-quadrant-panel">
+          <view class="today-quadrant-grid">
+            <view
+              wx:for="{{dashboard.quadrants}}"
+              wx:key="id"
+              class="today-quadrant-card tone-{{item.tone}}"
+            >
+            <view class="today-quadrant-label">
+              <view class="today-quadrant-title-block">
+                <text class="today-quadrant-title">{{item.title}}</text>
+              </view>
+              <view class="today-quadrant-count-wrap">
+                <text class="today-quadrant-count">{{item.count}}</text>
+              </view>
+            </view>
+            <scroll-view
+              wx:if="{{item.records.length}}"
+              class="today-quadrant-list"
+              scroll-y="{{true}}"
+              show-scrollbar="{{false}}"
+              aria-label="{{item.title}}事项列表，共{{item.count}}项，可上下滑动"
+            >
+              <view
+                wx:for="{{item.records}}"
+                wx:for-item="record"
+                wx:for-index="recordIndex"
+                wx:key="id"
+                class="today-quadrant-task"
+                data-id="{{record.id}}"
+                data-index="{{recordIndex}}"
+                data-count="{{item.count}}"
+                bindtap="openRecordDetail"
+                catchlongpress="openQuadrantOrderMenu"
+              >
+                <text class="today-quadrant-task-title">{{record.title}}</text>
+                <button class="today-quadrant-check" data-id="{{record.id}}" aria-label="完成打卡" catchtap="checkInRecord" catchlongpress="ignoreQuadrantLongPress"></button>
+              </view>
+            </scroll-view>
+            <text wx:else class="today-quadrant-empty">{{item.emptyText}}</text>
+          </view>
+          </view>
+        </view>
+        <view wx:if="{{companion.isAvailable}}" class="today-plan-sign-card">
+          <view class="today-plan-sign-head">
+            <view class="section-title-line">
+              <image class="section-title-icon" src="/assets/ui-icons/checkin.png" mode="aspectFit"></image>
+              <text class="section-title">每日签到</text>
+            </view>
+          </view>
+          <view class="today-plan-week-row">
+            <view wx:for="{{dailySignIn.weekDays}}" wx:key="date" class="today-plan-week-cell {{item.checked ? 'is-checked' : ''}} {{item.isToday ? 'is-today' : ''}}">
+              <text class="today-plan-week-label">{{item.label}}</text>
+              <text class="today-plan-week-day">{{item.day}}</text>
+            </view>
+          </view>
+          <view class="today-plan-sign-action-row">
+            <text class="today-plan-sign-streak">已连续签到 {{dailySignIn.streakDays}} 天</text>
+            <button
+              class="today-plan-sign-button {{dailySignIn.isTodayChecked ? 'is-done' : ''}} {{signInBusy ? 'is-busy' : ''}}"
+              disabled="{{dailySignIn.isTodayChecked || signInBusy}}"
+              bindtap="signInToday"
+            >{{signInBusy ? '签到中…' : dailySignIn.isTodayChecked ? '今日已签到' : '立即签到 · +5 EXP'}}</button>
+          </view>
+          <view class="today-plan-share-strip">
+            <text class="today-plan-share-text">分享给TA，一起把计划坚持下去</text>
+            <button
+              class="today-plan-share-button"
+              open-type="share"
+              data-share-scene="plan_companion"
+            >邀请TA</button>
+          </view>
+        </view>
+        <view wx:if="{{dashboard.hasCheckinItems}}" class="today-checkin-panel">
+          <view class="section-head today-checkin-head">
+            <text class="section-title">今日计划</text>
+            <text class="section-note">{{dashboard.checkinDoneCount}}/{{dashboard.checkinCount}}</text>
+          </view>
+          <view class="today-checkin-list">
+            <view
+              wx:for="{{dashboard.todayCheckinItems}}"
+              wx:key="id"
+              class="pill-row today-checkin-row tone-{{item.bubbleTone}} {{item.isCheckinDone ? 'is-done' : ''}}"
+              data-id="{{item.id}}"
+              bindtap="openRecordDetail"
+            >
+              <view class="bubble tone-{{item.bubbleTone}}">
+                <image wx:if="{{item.designIconAsset}}" class="bubble-icon-image" src="{{item.designIconAsset}}" mode="aspectFit"></image>
+                <text wx:else>{{item.designIcon}}</text>
+              </view>
+              <view class="pill-main today-checkin-main">
+                <text class="pill-title">{{item.title}}</text>
+                <view class="today-checkin-progress-row">
+                  <view class="progress-track today-checkin-progress-track">
+                    <view class="progress-fill" style="width: {{item.progressPercent}}%;"></view>
+                  </view>
+                  <text class="today-checkin-progress-text">{{item.progressText}}</text>
+                </view>
+                <text class="today-checkin-meta">{{item.recurrenceText}} · {{item.checkinStatusText}}</text>
+              </view>
+              <button class="pill-action {{item.isCheckinDone ? 'is-done' : ''}}" data-id="{{item.id}}" disabled="{{item.isCheckinDone || !item.isCheckinDue}}" aria-label="完成打卡" catchtap="checkInRecord"></button>
+            </view>
+          </view>
+          <view wx:if="{{dashboard.checkinRemainingCount > 0}}" class="today-checkin-more" bindtap="openCheckins">
+            还有 {{dashboard.checkinRemainingCount}} 项
+          </view>
+        </view>
+
+        <view class="section-head">
+          <text class="section-title">临近效期</text>
+          <text class="section-note">{{dashboard.laterReminders.length}}</text>
+        </view>
+        <view wx:if="{{dashboard.laterReminders.length}}" class="pill-list compact-list">
+          <view
+            wx:for="{{dashboard.laterReminders}}"
+            wx:key="id"
+            class="pill-row tone-{{item.bubbleTone}}"
+            data-id="{{item.id}}"
+            bindtap="openRecordDetail"
+          >
+            <view class="bubble tone-{{item.bubbleTone}}">
+              <image wx:if="{{item.designIconAsset}}" class="bubble-icon-image" src="{{item.designIconAsset}}" mode="aspectFit"></image>
+              <text wx:else>{{item.designIcon}}</text>
+            </view>
+            <view class="pill-main">
+              <text class="pill-title">{{item.title}}</text>
+              <text class="pill-meta">{{item.category}} · {{item.shortDateLabel}}</text>
+            </view>
+            <text class="arrow-text">›</text>
+          </view>
+        </view>
+        <view wx:else class="empty-card">
+          <text class="empty-title">没有临近效期</text>
+          <text class="empty-desc">重要日期已经暂时清爽。</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <reminder-renew-prompt
+    visible="{{!!renewReminderRecordId}}"
+    title="{{renewReminderTitle}}"
+    busy="{{renewReminderBusy}}"
+    bindconfirm="renewNextReminder"
+    binddismiss="dismissRenewReminder"
+  />
+  <floating-tabbar active="today" />
+</view>

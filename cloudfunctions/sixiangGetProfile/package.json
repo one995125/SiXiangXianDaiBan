@@ -1,0 +1,9 @@
+{
+  "name": "sixiang-get-profile",
+  "version": "1.0.0",
+  "description": "读取记得用户昵称和头像",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

@@ -1,0 +1,478 @@
+@import './styles/design-tokens.less';
+
+page {
+  min-height: 100%;
+  background: @color-page;
+  color: @color-ink;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+button {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+button::after {
+  border: 0;
+}
+
+.desk-page {
+  position: relative;
+  min-height: 100vh;
+  color: @color-ink;
+  background: linear-gradient(125deg, @color-page 0%, #f5e8d9 64%, #eee1e5 100%);
+  overflow: hidden;
+}
+
+.desk-page::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(176, 150, 101, 0.16) 1rpx, transparent 1rpx);
+  background-size: 26rpx 26rpx;
+  content: '';
+}
+
+.desk-scroll {
+  position: relative;
+  z-index: 1;
+  height: 100vh;
+}
+
+.desk-content {
+  box-sizing: border-box;
+  padding: 0 @space-5 calc(238rpx + env(safe-area-inset-bottom));
+}
+
+.desk-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 148rpx;
+}
+
+.desk-date,
+.desk-subtitle,
+.section-note,
+.pill-title,
+.pill-meta,
+.empty-title,
+.empty-desc {
+  display: block;
+}
+
+.desk-title {
+  display: inline;
+  color: @color-ink;
+  font-size: 48rpx;
+  font-weight: 800;
+  line-height: 60rpx;
+}
+
+.desk-date,
+.desk-subtitle {
+  margin-top: @space-1;
+  color: @color-text-secondary;
+  font-size: 24rpx;
+  line-height: 34rpx;
+}
+
+.paper-sheet {
+  position: relative;
+  box-sizing: border-box;
+  margin: 0 -@space-5;
+  padding: @space-5;
+  border-radius: @radius-sheet @radius-sheet 0 0;
+  background: @color-paper;
+  box-shadow: 0 -8rpx 28rpx rgba(83, 62, 36, 0.055);
+}
+
+.paper-card {
+  box-sizing: border-box;
+  border: 2rpx solid @color-border;
+  border-radius: @radius-card;
+  background: @color-surface;
+  box-shadow: none;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 32rpx 0 16rpx;
+}
+
+.section-title {
+  color: @color-ink;
+  font-size: 30rpx;
+  font-weight: 800;
+  line-height: 40rpx;
+}
+
+.section-note {
+  color: @color-text-secondary;
+  font-size: 23rpx;
+  line-height: 30rpx;
+}
+
+.pill-list {
+  display: flex;
+  flex-direction: column;
+  gap: @space-3;
+}
+
+.pill-row {
+  display: flex;
+  align-items: center;
+  min-height: 112rpx;
+  padding: @space-3 @space-4;
+  box-sizing: border-box;
+  border-radius: @radius-row;
+  background: @tone-blue;
+}
+
+.pill-row.tone-violet,
+.bubble.tone-violet {
+  background: @tone-violet;
+  color: @color-violet;
+}
+
+.pill-row.tone-checkin,
+.bubble.tone-checkin,
+.pill-row.tone-note,
+.bubble.tone-note {
+  background: @tone-violet;
+  color: @color-violet;
+}
+
+.pill-row.tone-blue,
+.bubble.tone-blue {
+  background: @tone-blue;
+  color: @color-blue;
+}
+
+.pill-row.tone-todo,
+.bubble.tone-todo {
+  background: @tone-blue;
+  color: @color-blue;
+}
+
+.pill-row.tone-rose,
+.bubble.tone-rose {
+  background: @tone-rose;
+  color: @color-rose;
+}
+
+.pill-row.tone-anniversary,
+.bubble.tone-anniversary {
+  background: @tone-rose;
+  color: @color-rose;
+}
+
+.pill-row.tone-coral,
+.bubble.tone-coral {
+  background: @tone-coral;
+  color: @color-coral;
+}
+
+.pill-row.tone-lagoon,
+.bubble.tone-lagoon {
+  background: @tone-lagoon;
+  color: @color-lagoon;
+}
+
+.pill-row.tone-mint,
+.bubble.tone-mint {
+  background: @tone-mint;
+  color: @color-mint;
+}
+
+.pill-row.tone-amber,
+.bubble.tone-amber {
+  background: @tone-amber;
+  color: @color-amber;
+}
+
+.pill-row.tone-expiry,
+.bubble.tone-expiry {
+  background: @tone-amber;
+  color: @color-amber;
+}
+
+.pill-row.tone-green,
+.bubble.tone-green {
+  background: #e8f6ee;
+  color: #4b9b6b;
+}
+
+.pill-row.tone-sky,
+.bubble.tone-sky {
+  background: @tone-sky;
+  color: @color-sky;
+}
+
+.pill-row.tone-peach,
+.bubble.tone-peach {
+  background: @tone-peach;
+  color: @color-peach;
+}
+
+.bubble {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72rpx;
+  height: 72rpx;
+  margin-right: 18rpx;
+  border-radius: 50%;
+  background: rgba(133, 119, 221, 0.16);
+  font-size: 32rpx;
+  font-weight: 800;
+}
+
+.bubble-icon-image {
+  display: block;
+  width: 54rpx;
+  height: 54rpx;
+  opacity: 0.92;
+}
+
+.section-title-line {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.section-title-icon {
+  flex: none;
+  display: block;
+  width: 42rpx;
+  height: 42rpx;
+  margin-right: 10rpx;
+  opacity: 0.9;
+}
+
+.pill-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.pill-title {
+  overflow: hidden;
+  color: @color-ink;
+  font-size: 28rpx;
+  font-weight: 800;
+  line-height: 36rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pill-meta {
+  overflow: hidden;
+  margin-top: 6rpx;
+  color: @color-text-secondary;
+  font-size: 23rpx;
+  line-height: 30rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.progress-track {
+  height: 10rpx;
+  margin-top: 12rpx;
+  overflow: hidden;
+  border-radius: 10rpx;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.progress-fill {
+  height: 10rpx;
+  border-radius: 10rpx;
+  background: #8577dd;
+}
+
+.tone-blue .progress-fill {
+  background: #5b82dd;
+}
+
+.tone-todo .progress-fill {
+  background: #5b82dd;
+}
+
+.tone-rose .progress-fill {
+  background: #df678d;
+}
+
+.tone-anniversary .progress-fill {
+  background: #df678d;
+}
+
+.tone-coral .progress-fill {
+  background: #e46f62;
+}
+
+.tone-lagoon .progress-fill {
+  background: #2f9a91;
+}
+
+.tone-mint .progress-fill,
+.tone-green .progress-fill {
+  background: #4aa470;
+}
+
+.tone-amber .progress-fill {
+  background: #bd8a2b;
+}
+
+.tone-sky .progress-fill {
+  background: #4e94ae;
+}
+
+.tone-peach .progress-fill {
+  background: #cf7a4e;
+}
+
+.tone-expiry .progress-fill {
+  background: #bd8a2b;
+}
+
+.tone-checkin .progress-fill,
+.tone-note .progress-fill {
+  background: #8577dd;
+}
+
+.pill-row.is-done {
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.pill-row.is-done .bubble {
+  background: rgba(255, 255, 255, 0.78);
+  color: #a8a1ae;
+}
+
+.pill-row.is-done .pill-title {
+  color: #7f788a;
+}
+
+.pill-row.is-done .pill-meta {
+  color: @color-text-muted;
+}
+
+.pill-row.is-done .progress-fill {
+  background: #c6bdca;
+}
+
+.pill-action {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 68rpx;
+  height: 68rpx;
+  margin-left: 10rpx;
+  padding: 0;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: transparent;
+  font-size: 0;
+  line-height: 68rpx;
+  box-shadow: none;
+}
+
+.pill-action::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: #f07c76;
+  transform: translate(-50%, -50%);
+}
+
+.pill-action::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: auto;
+  bottom: auto;
+  left: 50%;
+  width: 46rpx;
+  height: 46rpx;
+  box-sizing: border-box;
+  border: 3rpx solid #57b9a5;
+  border-radius: 50%;
+  background: rgba(255, 253, 247, 0.96);
+  box-shadow: 0 4rpx 10rpx rgba(87, 185, 165, 0.1);
+  transform: translate(-50%, -50%);
+}
+
+.pill-action.is-done {
+  background: transparent;
+  opacity: 1;
+  box-shadow: none;
+}
+
+.pill-action.is-done::after {
+  border-color: #57b9a5;
+  background: #57b9a5;
+  box-shadow: 0 5rpx 12rpx rgba(87, 185, 165, 0.18);
+}
+
+.pill-action.is-done::before {
+  content: '✓';
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: transparent;
+  color: #ffffff;
+  font-size: 25rpx;
+  font-weight: 900;
+  line-height: 30rpx;
+}
+
+.pill-action[disabled]:not(.is-done) {
+  background: transparent;
+  opacity: 0.56;
+  box-shadow: none;
+}
+
+.pill-action[disabled]:not(.is-done)::after {
+  border-color: rgba(87, 185, 165, 0.48);
+  background: rgba(255, 253, 247, 0.74);
+  box-shadow: none;
+}
+
+.pill-action[disabled]:not(.is-done)::before {
+  background: rgba(240, 124, 118, 0.58);
+}
+
+.empty-card {
+  box-sizing: border-box;
+  padding: 30rpx;
+  border: 2rpx solid @color-border;
+  border-radius: @radius-card;
+  background: @color-surface;
+}
+
+.empty-title {
+  color: @color-ink;
+  font-size: 28rpx;
+  font-weight: 800;
+  line-height: 38rpx;
+}
+
+.empty-desc {
+  margin-top: 8rpx;
+  color: @color-text-secondary;
+  font-size: 24rpx;
+  line-height: 34rpx;
+}

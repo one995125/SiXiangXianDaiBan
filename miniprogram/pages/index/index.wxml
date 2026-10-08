@@ -1,0 +1,26 @@
+<view class="desk-page legacy-route-page">
+  <scroll-view class="desk-scroll" scroll-y>
+    <view class="desk-content legacy-content" style="padding-top: {{contentTopPadding}}px;">
+      <view class="desk-header">
+        <view>
+          <text class="desk-title">{{fallback.title}}</text>
+          <text class="desk-subtitle">旧入口兼容</text>
+        </view>
+      </view>
+
+      <view class="paper-sheet">
+        <view class="paper-card legacy-panel">
+          <text class="legacy-kicker">正在迁移到新版信息架构</text>
+          <text class="legacy-description">{{fallback.description}}</text>
+          <text class="legacy-status">{{redirecting ? '正在自动跳转...' : '如果没有自动跳转，请选择下面的入口。'}}</text>
+
+          <view class="legacy-actions">
+            <button class="legacy-primary" bindtap="goPrimary">{{fallback.primaryLabel}}</button>
+            <button class="legacy-button" bindtap="goSecondary">{{fallback.secondaryLabel}}</button>
+            <button class="legacy-button" bindtap="goDetail">{{fallback.detailLabel}}</button>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

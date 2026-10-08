@@ -1,0 +1,93 @@
+<view class="pet-page">
+  <scroll-view class="pet-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+    <view class="pet-content" style="padding-top: {{contentTopPadding}}px;">
+      <view class="pet-topbar">
+        <view class="pet-back" bindtap="goBack" aria-label="返回">‹</view>
+        <view class="pet-heading">
+          <text class="pet-title">小暖的家</text>
+          <text class="pet-subtitle">把每一次完成，慢慢养成温暖</text>
+        </view>
+        <view class="pet-topbar-spacer"></view>
+      </view>
+
+      <block wx:if="{{companion.isAvailable}}">
+        <view class="pet-scene-card">
+          <image class="pet-home-image" src="{{companion.homeImageUrl}}" mode="aspectFill" />
+          <view class="pet-scene-soften"></view>
+          <view class="pet-level-pill">Lv.{{companion.level}} · {{companion.stageName}}</view>
+          <image class="pet-character" src="{{companion.imageUrl}}" mode="aspectFit" />
+          <view class="pet-speech">
+            <text>{{companion.stageDesc}}</text>
+          </view>
+        </view>
+
+        <view class="pet-progress-card">
+          <view class="pet-card-header">
+            <view>
+              <text class="pet-card-title">成长进度</text>
+              <text class="pet-card-caption" wx:if="{{companion.level < 3}}">再获得 {{companion.remainingExp}} 点能量升级</text>
+              <text class="pet-card-caption" wx:else>小暖已经长成温暖伙伴</text>
+            </view>
+            <text class="pet-exp">{{companion.exp}} EXP</text>
+          </view>
+          <view class="pet-progress-track">
+            <view class="pet-progress-value" style="width: {{companion.progressPercent}}%;"></view>
+          </view>
+          <button
+            class="pet-checkin {{companion.isTodayChecked ? 'is-done' : ''}}"
+            loading="{{checkinBusy}}"
+            disabled="{{checkinBusy || companion.isTodayChecked}}"
+            bindtap="checkInCompanion"
+          >{{companion.isTodayChecked ? '今日已签到' : '立即签到 +5 EXP'}}</button>
+        </view>
+
+        <view class="pet-stats">
+          <view class="pet-stat">
+            <text class="pet-stat-value">{{companion.companionDays}}</text>
+            <text class="pet-stat-label">陪伴天数</text>
+          </view>
+          <view class="pet-stat">
+            <text class="pet-stat-value">{{companion.state.checkinDates.length}}</text>
+            <text class="pet-stat-label">累计签到</text>
+          </view>
+          <view class="pet-stat">
+            <text class="pet-stat-value">{{companion.state.rewardHistory.length}}</text>
+            <text class="pet-stat-label">收获能量</text>
+          </view>
+        </view>
+
+        <view class="pet-roadmap-card">
+          <text class="pet-card-title">小暖的成长</text>
+          <view class="pet-roadmap-row {{companion.level >= 1 ? 'is-reached' : ''}}">
+            <view class="pet-roadmap-dot"></view>
+            <view class="pet-roadmap-copy">
+              <text class="pet-roadmap-title">Lv.1 小小陪伴</text>
+              <text class="pet-roadmap-desc">0–59 EXP · 轻轻收集你的每次完成</text>
+            </view>
+          </view>
+          <view class="pet-roadmap-row {{companion.level >= 2 ? 'is-reached' : ''}}">
+            <view class="pet-roadmap-dot"></view>
+            <view class="pet-roadmap-copy">
+              <text class="pet-roadmap-title">Lv.2 活力成长</text>
+              <text class="pet-roadmap-desc">60–159 EXP · 小暖开始挥手回应</text>
+            </view>
+          </view>
+          <view class="pet-roadmap-row {{companion.level >= 3 ? 'is-reached' : ''}}">
+            <view class="pet-roadmap-dot"></view>
+            <view class="pet-roadmap-copy">
+              <text class="pet-roadmap-title">Lv.3 温暖相伴</text>
+              <text class="pet-roadmap-desc">160 EXP起 · 把坚持变成发光的陪伴</text>
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <view class="pet-locked" wx:else>
+        <view class="pet-locked-orb">暖</view>
+        <text class="pet-locked-title">小暖还在等你</text>
+        <text class="pet-locked-desc">完成七日成长并解锁礼簿后，小暖就会来到你的计划生活里。</text>
+        <button class="pet-plan-button" bindtap="goPlan">去完成七日成长</button>
+      </view>
+    </view>
+  </scroll-view>
+</view>

@@ -1,0 +1,38 @@
+<view class="tabbar-wrap">
+  <button class="fab-button" bindtap="onCreateTap">+</button>
+  <view class="floating-tabbar">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="key"
+      class="tab-item {{active === item.key ? 'is-active' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onTabTap"
+    >
+      <view class="tab-pill">
+        <view class="tab-icon tab-icon-{{item.key}}">
+          <view wx:if="{{item.key === 'today'}}" class="icon-home">
+            <view class="icon-home-roof"></view>
+          </view>
+          <view wx:elif="{{item.key === 'checkins'}}" class="icon-target">
+            <view class="icon-target-dot"></view>
+          </view>
+          <view wx:elif="{{item.key === 'records'}}" class="icon-book">
+            <view class="icon-book-page"></view>
+            <view class="icon-book-page"></view>
+          </view>
+          <view wx:elif="{{item.key === 'calendar'}}" class="icon-overview">
+            <view class="icon-overview-cell"></view>
+            <view class="icon-overview-cell"></view>
+            <view class="icon-overview-cell"></view>
+            <view class="icon-overview-cell"></view>
+          </view>
+          <view wx:else class="icon-user">
+            <view class="icon-user-head"></view>
+            <view class="icon-user-body"></view>
+          </view>
+        </view>
+        <text class="tab-label">{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+</view>

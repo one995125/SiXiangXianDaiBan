@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "reminder-renew-prompt": "/components/reminder-renew-prompt/reminder-renew-prompt"
+  }
+}

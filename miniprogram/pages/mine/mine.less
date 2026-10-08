@@ -1,0 +1,479 @@
+@import '../../styles/design-tokens.less';
+
+.page-title-input,
+.sync-badge,
+.profile-subtitle,
+.metric-label,
+.metric-value,
+.metric-hint,
+.sync-title,
+.sync-desc,
+.info-label,
+.info-value,
+.cloud-sync-debug-title,
+.cloud-sync-debug-text,
+.overview-label,
+.overview-value,
+.settings-title,
+.settings-desc,
+.settings-status,
+.danger-title,
+.danger-desc {
+  display: block;
+}
+
+.profile-card {
+  display: flex;
+  align-items: center;
+  min-height: 120rpx;
+  padding: @space-3 @space-4;
+  background: @color-surface;
+}
+
+.mine-page .paper-sheet {
+  padding-top: 24rpx;
+}
+
+.mine-page .paper-card:not(.profile-card) {
+  padding: @space-4;
+}
+
+.mine-page .paper-card + .paper-card {
+  margin-top: @space-4;
+}
+
+.mine-page .paper-card .section-head {
+  margin-top: 0;
+}
+
+.profile-avatar-button {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80rpx;
+  height: 80rpx;
+  margin-right: @space-3;
+  padding: 0;
+  border-radius: 50%;
+  background: @tone-violet;
+  color: @color-violet;
+  border: 2rpx solid rgba(133, 119, 221, 0.14);
+  font-size: 34rpx;
+  font-weight: 900;
+  line-height: 80rpx;
+  overflow: hidden;
+}
+
+.profile-avatar-button::after {
+  border: 0;
+}
+
+.profile-avatar-button.is-loading {
+  opacity: 0.72;
+}
+
+.profile-avatar-image {
+  display: block;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+}
+
+.profile-avatar-text {
+  color: @color-violet;
+  font-size: 34rpx;
+  font-weight: 900;
+  line-height: 80rpx;
+}
+
+.profile-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.page-title-input {
+  width: 100%;
+  height: 48rpx;
+  color: @color-ink;
+  font-size: 32rpx;
+  font-weight: 900;
+  line-height: 48rpx;
+}
+
+.profile-placeholder {
+  color: @color-text-muted;
+}
+
+.profile-subtitle {
+  margin-top: 6rpx;
+  color: @color-text-secondary;
+  font-size: 23rpx;
+  line-height: 32rpx;
+}
+
+.sync-badge {
+  flex: none;
+  min-width: 104rpx;
+  margin-left: @space-2;
+  padding: @space-1 @space-2;
+  box-sizing: border-box;
+  color: @color-violet;
+  background: @tone-violet;
+  border-radius: @radius-pill;
+  font-size: 22rpx;
+  font-weight: 800;
+  line-height: 30rpx;
+  text-align: center;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: @space-2;
+  margin-top: @space-4;
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 152rpx;
+  padding: @space-3;
+  box-sizing: border-box;
+  border-radius: @radius-row;
+  background: #f7f2e9;
+}
+
+.metric-card.tone-violet {
+  background: #f0eaff;
+}
+
+.metric-card.tone-mint {
+  background: #e8f7ee;
+}
+
+.metric-card.tone-amber {
+  background: #fff1d8;
+}
+
+.metric-label {
+  color: @color-text-secondary;
+  font-size: 22rpx;
+  line-height: 30rpx;
+}
+
+.metric-value {
+  margin-top: 12rpx;
+  color: @color-ink;
+  font-size: 40rpx;
+  font-weight: 900;
+  line-height: 50rpx;
+}
+
+.metric-hint {
+  margin-top: 8rpx;
+  color: @color-text-secondary;
+  font-size: 21rpx;
+  line-height: 28rpx;
+}
+
+.mine-empty {
+  margin-top: 20rpx;
+}
+
+.cloud-sync-card {
+  margin-top: 20rpx;
+}
+
+.sync-hero {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.sync-status-dot {
+  flex: none;
+  width: 18rpx;
+  height: 18rpx;
+  margin-right: 18rpx;
+  border-radius: 50%;
+  background: #4aa470;
+  box-shadow: 0 0 0 10rpx rgba(74, 164, 112, 0.12);
+}
+
+.sync-status-dot.is-syncing,
+.sync-status-dot.has-pending {
+  background: #bd8a2b;
+  box-shadow: 0 0 0 10rpx rgba(189, 138, 43, 0.13);
+}
+
+.sync-status-dot.has-error {
+  background: #d45b52;
+  box-shadow: 0 0 0 10rpx rgba(212, 91, 82, 0.13);
+}
+
+.sync-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.sync-title {
+  overflow: hidden;
+  color: @color-ink;
+  font-size: 30rpx;
+  font-weight: 900;
+  line-height: 40rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sync-desc {
+  overflow: hidden;
+  margin-top: 4rpx;
+  color: @color-text-secondary;
+  font-size: 23rpx;
+  line-height: 32rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cloud-sync-badge {
+  flex: none;
+  min-width: 112rpx;
+  margin-left: 16rpx;
+  padding: 8rpx 14rpx;
+  box-sizing: border-box;
+  color: #24784e;
+  background: #e8f7ee;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 800;
+  line-height: 30rpx;
+  text-align: center;
+}
+
+.cloud-sync-badge.is-syncing,
+.cloud-sync-badge.has-pending {
+  color: #a2690e;
+  background: #fff1d8;
+}
+
+.cloud-sync-badge.has-error {
+  color: #b42318;
+  background: #ffe9e6;
+}
+
+.sync-detail-list {
+  margin-top: 18rpx;
+  padding-top: 8rpx;
+  border-top: 2rpx solid #f1eadf;
+}
+
+.sync-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 18rpx;
+}
+
+.sync-check-button {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 160rpx;
+  height: 60rpx;
+  padding: 0 24rpx;
+  border-radius: 999rpx;
+  background: #8577dd;
+  color: #ffffff;
+  font-size: 24rpx;
+  font-weight: 800;
+  line-height: 60rpx;
+}
+
+.sync-check-button[disabled] {
+  background: #bbb3d8;
+}
+
+.info-list {
+  margin-top: 8rpx;
+}
+
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-height: 70rpx;
+  padding: 14rpx 0;
+  border-bottom: 2rpx solid #f1eadf;
+}
+
+.info-row:last-child {
+  border-bottom: 0;
+}
+
+.info-label {
+  flex: none;
+  color: @color-text-secondary;
+  font-size: 24rpx;
+  line-height: 34rpx;
+}
+
+.info-value {
+  min-width: 0;
+  flex: 1;
+  margin-left: 24rpx;
+  color: @color-ink;
+  font-size: 24rpx;
+  font-weight: 700;
+  line-height: 34rpx;
+  text-align: right;
+  word-break: break-all;
+}
+
+.cloud-sync-debug {
+  padding: 16rpx;
+  margin-top: 12rpx;
+  border-radius: 18rpx;
+  background: #fff1d8;
+}
+
+.cloud-sync-debug-title {
+  color: #a2690e;
+  font-size: 23rpx;
+  font-weight: 800;
+}
+
+.cloud-sync-debug-text {
+  margin-top: 6rpx;
+  color: #746b82;
+  font-size: 22rpx;
+  line-height: 32rpx;
+  word-break: break-all;
+}
+
+.compact-section-head {
+  margin-bottom: 18rpx;
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: @space-2;
+}
+
+.overview-item {
+  min-height: 92rpx;
+  padding: 16rpx;
+  box-sizing: border-box;
+  border: 2rpx solid @color-border;
+  border-radius: @radius-row;
+  background: @color-paper;
+}
+
+.overview-label {
+  color: @color-text-secondary;
+  font-size: 22rpx;
+  line-height: 30rpx;
+}
+
+.overview-value {
+  margin-top: 8rpx;
+  color: @color-ink;
+  font-size: 29rpx;
+  font-weight: 900;
+  line-height: 38rpx;
+}
+
+.settings-card {
+  margin-bottom: 8rpx;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 108rpx;
+  padding: 18rpx 0;
+  box-sizing: border-box;
+  border-top: 2rpx solid #f1eadf;
+  text-align: left;
+}
+
+.family-row {
+  border-top: 0;
+  background: transparent;
+}
+
+.family-row::after {
+  border: 0;
+}
+
+.family-status {
+  background: #f0eaff;
+  color: #8577dd;
+}
+
+.settings-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.settings-title {
+  color: @color-ink;
+  font-size: 27rpx;
+  font-weight: 800;
+  line-height: 36rpx;
+}
+
+.settings-desc {
+  margin-top: 6rpx;
+  color: @color-text-secondary;
+  font-size: 23rpx;
+  line-height: 32rpx;
+}
+
+.settings-status {
+  flex: none;
+  margin-left: 18rpx;
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  background: #e8f7ee;
+  color: #24784e;
+  font-size: 22rpx;
+  font-weight: 800;
+  line-height: 30rpx;
+}
+
+.danger-row {
+  min-height: 104rpx;
+  margin-top: @space-3;
+  padding: @space-3;
+  border-top: 0;
+  border-radius: @radius-row;
+  background: @tone-coral;
+}
+
+.danger-title {
+  color: #d45b52;
+  font-size: 28rpx;
+  font-weight: 800;
+  line-height: 36rpx;
+}
+
+.danger-desc {
+  margin-top: 6rpx;
+  color: #746b82;
+  font-size: 23rpx;
+  line-height: 32rpx;
+}
+
+.danger-arrow {
+  flex: none;
+  margin-left: 18rpx;
+  color: #a9a0b5;
+  font-size: 48rpx;
+  line-height: 48rpx;
+}

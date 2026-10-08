@@ -1,0 +1,218 @@
+@import '../../styles/design-tokens.less';
+
+.tabbar-wrap {
+  position: fixed;
+  right: @space-4;
+  bottom: calc(@space-3 + env(safe-area-inset-bottom));
+  left: @space-4;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.fab-button {
+  position: absolute;
+  right: 0;
+  bottom: 112rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80rpx;
+  height: 80rpx;
+  padding: 0;
+  border-radius: 50%;
+  background: @color-violet;
+  box-shadow: @shadow-floating;
+  color: #fff;
+  font-size: 44rpx;
+  font-weight: 500;
+  line-height: 80rpx;
+  pointer-events: auto;
+}
+
+.floating-tabbar {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  height: 96rpx;
+  border: 2rpx solid @color-border;
+  border-radius: @radius-pill;
+  background: rgba(254, 252, 250, 0.98);
+  box-shadow: @shadow-floating;
+  pointer-events: auto;
+}
+
+.tab-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  box-sizing: border-box;
+  color: @color-text-muted;
+  font-size: 22rpx;
+  line-height: 28rpx;
+}
+
+.tab-item.is-active {
+  color: #ffffff;
+}
+
+.tab-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  width: 100%;
+  height: 96rpx;
+  box-sizing: border-box;
+}
+
+.tab-item.is-active .tab-pill {
+  width: 76rpx;
+  height: 76rpx;
+  background: @color-violet;
+  border-radius: 50%;
+  box-shadow: 0 10rpx 22rpx rgba(87, 71, 189, 0.2);
+}
+
+.tab-item.is-active .tab-icon {
+  width: 44rpx;
+  height: 42rpx;
+  line-height: 42rpx;
+}
+
+.tab-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52rpx;
+  height: 48rpx;
+  box-sizing: border-box;
+  border-radius: 50%;
+  color: inherit;
+  font-size: 26rpx;
+  font-weight: 700;
+  line-height: 48rpx;
+}
+
+.icon-home,
+.icon-target,
+.icon-book,
+.icon-overview,
+.icon-user {
+  position: relative;
+  box-sizing: border-box;
+  color: inherit;
+}
+
+.icon-home {
+  width: 28rpx;
+  height: 22rpx;
+  margin-top: 10rpx;
+  border: 4rpx solid currentColor;
+  border-top: 0;
+  border-radius: 4rpx;
+}
+
+.icon-home-roof {
+  position: absolute;
+  top: -15rpx;
+  left: 1rpx;
+  width: 19rpx;
+  height: 19rpx;
+  border-top: 4rpx solid currentColor;
+  border-left: 4rpx solid currentColor;
+  border-radius: 3rpx;
+  transform: rotate(45deg);
+}
+
+.icon-target {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32rpx;
+  height: 32rpx;
+  border: 4rpx solid currentColor;
+  border-radius: 50%;
+}
+
+.icon-target-dot {
+  width: 9rpx;
+  height: 9rpx;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.icon-book {
+  display: flex;
+  width: 36rpx;
+  height: 30rpx;
+  border: 4rpx solid currentColor;
+  border-radius: 6rpx;
+  overflow: hidden;
+}
+
+.icon-book-page {
+  flex: 1;
+  box-sizing: border-box;
+}
+
+.icon-book-page + .icon-book-page {
+  border-left: 4rpx solid currentColor;
+}
+
+.icon-overview {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  width: 34rpx;
+  height: 34rpx;
+  gap: 5rpx;
+}
+
+.icon-overview-cell {
+  border: 4rpx solid currentColor;
+  border-radius: 7rpx;
+}
+
+.tab-item.is-active .icon-overview-cell {
+  border-width: 3rpx;
+}
+
+.icon-user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 36rpx;
+  height: 36rpx;
+}
+
+.icon-user-head {
+  width: 14rpx;
+  height: 14rpx;
+  border: 4rpx solid currentColor;
+  border-radius: 50%;
+}
+
+.icon-user-body {
+  width: 28rpx;
+  height: 14rpx;
+  margin-top: 4rpx;
+  border: 4rpx solid currentColor;
+  border-top-left-radius: 18rpx;
+  border-top-right-radius: 18rpx;
+  border-bottom: 0;
+}
+
+.tab-label {
+  margin-top: 0;
+  color: inherit;
+  font-size: 22rpx;
+  line-height: 28rpx;
+}
+
+.tab-item.is-active .tab-label {
+  color: #ffffff;
+  font-size: 22rpx;
+  line-height: 26rpx;
+  font-weight: 700;
+}

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "待办与纪念日记录",
+  "usingComponents": {
+    "floating-tabbar": "/components/floating-tabbar/floating-tabbar"
+  }
+}

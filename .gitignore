@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# WeChat DevTools generated npm output
+miniprogram/miniprogram_npm/
+
+# Local-only WeChat DevTools configuration
+project.private.config.json
+
+# Build outputs and caches
+dist/
+build/
+.cache/
+.temp/
+coverage/
+.codex_temp/
+.codex_tmp/
+
+# Windows 保留名异常文件；不纳入版本库，确认无业务用途后再单独清理。
+NUL
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

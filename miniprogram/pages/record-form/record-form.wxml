@@ -1,0 +1,249 @@
+<view class="desk-page form-page">
+  <scroll-view class="desk-scroll form-scroll" scroll-y>
+    <view class="desk-content form-content" style="padding-top: {{contentTopPadding}}px;">
+      <view class="page-head">
+        <button class="back-button" bindtap="goBack">‹</button>
+        <text class="page-title">{{isEditing ? '编辑记录' : '记录一件事'}}</text>
+        <view class="head-placeholder"></view>
+      </view>
+
+      <view class="form-sheet paper-sheet">
+        <view class="form-section">
+          <view class="section-head">
+            <text class="section-title">选择记录类型</text>
+            <text class="section-note">之后仍可修改</text>
+          </view>
+          <view class="type-grid">
+            <view
+              wx:for="{{recordTypes}}"
+              wx:key="type"
+              class="type-card tone-{{item.tone}} {{draft.type === item.type ? 'is-active' : ''}}"
+              data-type="{{item.type}}"
+              bindtap="selectType"
+            >
+              <text class="type-icon">{{item.icon}}</text>
+              <text class="type-label">{{item.shortLabel}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view wx:if="{{draft.type === 'note'}}" class="field-block">
+          <text class="field-label">便签类型</text>
+          <view class="anniversary-mode-grid">
+            <button
+              wx:for="{{noteKindOptions}}"
+              wx:key="value"
+              class="anniversary-mode-card {{draft.noteKind === item.value ? 'is-active' : ''}}"
+              data-kind="{{item.value}}"
+              bindtap="selectNoteKind"
+            >
+              <text class="anniversary-mode-title">{{item.label}}</text>
+              <text class="anniversary-mode-desc">{{item.desc}}</text>
+              <view wx:if="{{draft.noteKind === item.value}}" class="anniversary-mode-selected-badge">✓</view>
+            </button>
+          </view>
+        </view>
+
+        <view class="field-block">
+          <text class="field-label">标题</text>
+          <view class="input-card">
+            <input class="title-input" value="{{draft.title}}" maxlength="30" placeholder="输入标题" placeholder-class="form-placeholder" bindinput="onTitleInput" />
+            <text class="count-text">{{titleCount}} / 30</text>
+          </view>
+        </view>
+
+        <view class="field-block">
+          <text class="field-label">分类标签</text>
+          <picker mode="selector" range="{{categoryLabels}}" value="{{categoryIndex}}" bindchange="onCategoryChange">
+            <view class="picker-card category-picker">
+              <view>
+                <text class="picker-label">选择分类</text>
+                <text class="picker-value">{{draft.category || '请选择分类'}}</text>
+              </view>
+              <text class="picker-arrow">›</text>
+            </view>
+          </picker>
+          <input
+            wx:if="{{isCustomCategory}}"
+            class="plain-input custom-category-input"
+            value="{{draft.category}}"
+            maxlength="20"
+            placeholder="输入自定义分类"
+            placeholder-class="form-placeholder"
+            bindinput="onCustomCategoryInput"
+          />
+        </view>
+
+        <view wx:if="{{draft.type === 'anniversary'}}" class="field-block">
+          <text class="field-label">纪念方式</text>
+          <view class="anniversary-mode-grid">
+            <button
+              wx:for="{{anniversaryModeOptions}}"
+              wx:key="value"
+              class="anniversary-mode-card tone-{{item.value}} {{draft.anniversaryMode === item.value ? 'is-active' : ''}}"
+              data-mode="{{item.value}}"
+              bindtap="switchAnniversaryMode"
+            >
+              <text class="anniversary-mode-title">{{item.label}}</text>
+              <text class="anniversary-mode-desc">{{item.desc}}</text>
+              <view wx:if="{{draft.anniversaryMode === item.value}}" class="anniversary-mode-selected-badge">✓</view>
+            </button>
+          </view>
+        </view>
+
+        <view wx:if="{{draft.type === 'todo'}}" class="field-block">
+          <text class="field-label">四象限</text>
+          <view class="quadrant-grid">
+            <button
+              wx:for="{{todoQuadrantOptions}}"
+              wx:key="id"
+              class="quadrant-card tone-{{item.tone}} {{draft.quadrant === item.id ? 'is-active' : ''}}"
+              data-quadrant="{{item.id}}"
+              bindtap="selectTodoQuadrant"
+            >
+              <view class="quadrant-card-head">
+                <text class="quadrant-title">{{item.title}}</text>
+                <text class="quadrant-action">{{item.action}}</text>
+              </view>
+              <view wx:if="{{draft.quadrant === item.id}}" class="quadrant-selected-badge">✓</view>
+            </button>
+          </view>
+        </view>
+
+        <view wx:if="{{draft.type === 'todo'}}" class="field-block">
+          <text class="field-label">重复方式</text>
+          <picker mode="selector" range="{{recurrenceLabels}}" value="{{recurrenceIndex}}" bindchange="onRecurrenceChange">
+            <view class="setting-row recurrence-picker">
+              <view class="setting-icon">↻</view>
+              <view class="setting-main">
+                <text class="setting-title">周期计划</text>
+                <text class="setting-desc">每日、每周、每月计划会按周期累计进度</text>
+              </view>
+              <text class="setting-value">{{recurrenceOptions[recurrenceIndex].label}}</text>
+            </view>
+          </picker>
+
+          <view wx:if="{{draft.recurrenceType !== 'none'}}" class="recurrence-panel">
+            <view class="monthly-tip">
+              <text wx:if="{{draft.recurrenceType === 'weekly'}}">已选择每周 {{draft.weeklyDays.length}} 天，每个选中日打卡 1 次。</text>
+              <text wx:else>每个计划发生日打卡 1 次，漏打不会累积到下一天。</text>
+            </view>
+
+            <view wx:if="{{draft.recurrenceType === 'weekly'}}" class="weekday-block">
+              <text class="target-label">选择周几</text>
+              <view class="weekday-row">
+                <button
+                  wx:for="{{weekdayOptions}}"
+                  wx:key="value"
+                  class="weekday-chip {{item.checked ? 'is-active' : ''}}"
+                  data-day="{{item.value}}"
+                  bindtap="toggleWeeklyDay"
+                >{{item.label}}</button>
+              </view>
+            </view>
+
+            <view wx:if="{{draft.recurrenceType === 'monthly'}}" class="monthly-tip">
+              <text>每月计划会在记录开始日触发；如果当月没有这一天，会自动收敛到当月最后一天。</text>
+            </view>
+            <view wx:if="{{draft.recurrenceType === 'yearly'}}" class="monthly-tip">
+              <text>每年在开始日期对应的月日触发一次。</text>
+            </view>
+          </view>
+        </view>
+
+        <view wx:if="{{draft.type === 'todo' && draft.recurrenceType === 'none'}}" class="field-block">
+          <view class="deadline-head">
+            <text class="field-label">完成期限</text>
+            <text class="deadline-note">到期未完成会继续进入今日四象限</text>
+          </view>
+          <view class="deadline-quick-grid">
+            <block wx:for="{{deadlineQuickOptions}}" wx:key="key">
+              <picker
+                wx:if="{{item.key === 'custom'}}"
+                mode="date"
+                value="{{draft.date}}"
+                bindchange="onDateChange"
+              >
+                <view class="deadline-chip {{selectedDeadlineQuickKey === item.key ? 'is-active' : ''}}">
+                  <text class="deadline-chip-title">{{item.label}}</text>
+                  <text class="deadline-chip-desc">{{item.desc}}</text>
+                </view>
+              </picker>
+              <button
+                wx:else
+                class="deadline-chip {{selectedDeadlineQuickKey === item.key ? 'is-active' : ''}}"
+                data-key="{{item.key}}"
+                bindtap="selectDeadlineQuick"
+              >
+                <text class="deadline-chip-title">{{item.label}}</text>
+                <text class="deadline-chip-desc">{{item.desc}}</text>
+              </button>
+            </block>
+          </view>
+        </view>
+
+        <view wx:if="{{draft.type !== 'note'}}" class="time-grid">
+          <picker mode="date" value="{{draft.date}}" bindchange="onDateChange">
+            <view class="picker-card">
+              <text class="picker-label">{{draft.type === 'todo' ? (draft.recurrenceType === 'none' ? '截止日期' : '开始日期') : '日期'}}</text>
+              <text class="picker-value">{{draft.date}}</text>
+            </view>
+          </picker>
+          <picker mode="time" value="{{draft.time || '09:00'}}" bindchange="onTimeChange">
+            <view class="picker-card">
+              <text class="picker-label">时间</text>
+              <text class="picker-value">{{draft.isAllDay ? '全天' : draft.time}}</text>
+            </view>
+          </picker>
+        </view>
+
+        <button wx:if="{{draft.type !== 'note'}}" class="all-day-button {{draft.isAllDay ? 'is-active' : ''}}" bindtap="toggleAllDay">
+          {{draft.isAllDay ? '当前为全天事项' : '设为全天事项'}}
+        </button>
+
+        <picker wx:if="{{draft.type !== 'note'}}" mode="selector" range="{{remindLabels}}" value="{{remindIndex}}" bindchange="onRemindChange">
+          <view class="setting-row">
+            <view class="setting-icon">!</view>
+            <view class="setting-main">
+              <text class="setting-title">提醒</text>
+              <text class="setting-desc">{{reminderConfig.enabled ? '微信服务通知需主动授权，一次授权提醒一次' : '微信提醒暂未配置，当前只保存提醒时间'}}</text>
+              <text wx:if="{{isEditing && draft.remindBeforeMinutes > 0}}" class="reminder-status-text">{{reminderStatusLoading ? '正在读取提醒状态…' : reminderStatus.statusText}}</text>
+            </view>
+            <text class="setting-value">{{remindOptions[remindIndex].label}}</text>
+          </view>
+        </picker>
+
+        <view wx:if="{{familyFeatureEnabled}}" class="field-block">
+          <view class="section-head visibility-section-head">
+            <text class="field-label">可见范围</text>
+            <text class="section-note">{{familyState ? familyState.displayName : '家庭空间未开启'}}</text>
+          </view>
+          <view class="visibility-grid">
+            <button
+              wx:for="{{visibilityOptions}}"
+              wx:key="value"
+              class="visibility-card {{draft.visibility === item.value ? 'is-active' : ''}} {{item.disabled ? 'is-disabled' : ''}}"
+              data-visibility="{{item.value}}"
+              data-disabled="{{item.disabled}}"
+              bindtap="selectVisibility"
+            >
+              <text class="visibility-title">{{item.label}}</text>
+              <text class="visibility-desc">{{item.desc}}</text>
+            </button>
+          </view>
+        </view>
+
+        <view class="field-block">
+          <text class="field-label">备注（可选）</text>
+          <textarea class="note-input" value="{{draft.note}}" maxlength="500" placeholder="{{notePlaceholder}}" placeholder-class="form-placeholder" bindinput="onNoteInput" />
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="submit-float">
+    <button class="submit-button" disabled="{{submitBusy}}" bindtap="submitForm">
+      {{submitBusy ? '保存中…' : (draft.type !== 'note' && draft.remindBeforeMinutes > 0 && reminderConfig.enabled && !reminderStatus.hasActiveAuthorization ? '保存并开启微信提醒' : '保存')}}
+    </button>
+  </view>
+</view>

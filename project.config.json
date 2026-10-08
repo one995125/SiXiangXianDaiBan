@@ -1,0 +1,106 @@
+{
+  "description": "项目配置文件",
+  "miniprogramRoot": "miniprogram/",
+  "cloudfunctionRoot": "cloudfunctions/",
+  "compileType": "miniprogram",
+  "setting": {
+    "packNpmRelationList": [
+      {
+        "packageJsonPath": "./package.json",
+        "miniprogramNpmDistDir": "./miniprogram/"
+      }
+    ],
+    "useCompilerPlugins": [
+      "typescript",
+      "less"
+    ],
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    },
+    "coverView": false,
+    "postcss": false,
+    "minified": true,
+    "enhance": true,
+    "showShadowRootInWxmlPanel": false,
+    "ignoreUploadUnusedFiles": true,
+    "compileHotReLoad": false,
+    "skylineRenderEnable": false,
+    "packNpmManually": true,
+    "es6": true,
+    "compileWorklet": false,
+    "uglifyFileName": false,
+    "uploadWithSourceMap": true,
+    "minifyWXSS": true,
+    "minifyWXML": true,
+    "minifyJS": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": true,
+    "lessSetting": {
+      "commonUseFilePath": "app.less"
+    }
+  },
+  "simulatorType": "wechat",
+  "simulatorPluginLibVersion": {},
+  "condition": {},
+  "srcMiniprogramRoot": "miniprogram/",
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  },
+  "libVersion": "2.32.3",
+  "packOptions": {
+    "ignore": [
+      {
+        "value": "assets/images/brand/app-avatar-512-v2.png",
+        "type": "file"
+      },
+      {
+        "value": "assets/images/brand/app-avatar-512.png",
+        "type": "file"
+      },
+      {
+        "value": "assets/images/brand/miniprogram-code.png",
+        "type": "file"
+      },
+      {
+        "value": "assets/overview-icons",
+        "type": "folder"
+      },
+      {
+        "value": "assets/anniversary-icons",
+        "type": "folder"
+      },
+      {
+        "value": "assets/images/companion/xiaonuan-lv1.png",
+        "type": "file"
+      },
+      {
+        "value": "assets/images/companion/xiaonuan-lv2.png",
+        "type": "file"
+      },
+      {
+        "value": "assets/images/companion/xiaonuan-lv3.png",
+        "type": "file"
+      },
+      {
+        "value": "assets/images/home-mascot.png",
+        "type": "file"
+      },
+      {
+        "value": "assets/images/brand/app-avatar-144.png",
+        "type": "file"
+      },
+      {
+        "value": "assets/images/pets",
+        "type": "folder"
+      }
+    ],
+    "include": []
+  },
+  "appid": "wx754380008b8e5ace"
+}

@@ -1,0 +1,143 @@
+<view class="desk-page mine-page">
+  <scroll-view class="desk-scroll" scroll-y>
+    <view class="desk-content" style="padding-top: {{contentTopPadding}}px;">
+      <view class="paper-sheet">
+        <view class="profile-card paper-card">
+          <button
+            class="profile-avatar-button {{updatingAvatar ? 'is-loading' : ''}}"
+            open-type="chooseAvatar"
+            bindchooseavatar="onChooseAvatar"
+          >
+            <image
+              wx:if="{{profileAvatarDisplayUrl}}"
+              class="profile-avatar-image"
+              src="{{profileAvatarDisplayUrl}}"
+              mode="aspectFill"
+            />
+            <text wx:else class="profile-avatar-text">{{updatingAvatar ? '...' : '我'}}</text>
+          </button>
+          <view class="profile-main">
+            <input
+              class="page-title-input"
+              type="nickname"
+              value="{{userProfile.nickName}}"
+              placeholder="我的微信名"
+              placeholder-class="profile-placeholder"
+              bindinput="onNicknameInput"
+              bindblur="onNicknameBlur"
+            />
+            <text class="profile-subtitle">记得 · {{summary.todayLabel}}</text>
+          </view>
+          <view class="sync-badge">{{loginState.backendLinked ? '云端同步' : '待同步'}}</view>
+        </view>
+
+        <view class="metrics-grid">
+          <view wx:for="{{metrics}}" wx:key="label" class="metric-card tone-{{item.tone}}">
+            <text class="metric-label">{{item.label}}</text>
+            <text class="metric-value">{{item.value}}</text>
+            <text class="metric-hint">{{item.hint}}</text>
+          </view>
+        </view>
+
+        <view wx:if="{{!summary.hasData}}" class="empty-card mine-empty">
+          <text class="empty-title">还没有记录</text>
+          <text class="empty-desc">从“今日”页记录待办、纪念日、效期事项或便签，之后会在这里汇总。</text>
+        </view>
+
+        <view class="paper-card cloud-sync-card">
+          <view class="sync-hero">
+            <view class="sync-status-dot {{cloudSyncStatusView.tone}}"></view>
+            <view class="sync-main">
+              <text class="sync-title">{{cloudSyncStatusView.summaryText}}</text>
+              <text class="sync-desc">{{cloudSyncStatusView.detailText}}</text>
+            </view>
+            <text class="cloud-sync-badge {{cloudSyncStatusView.tone}}">{{cloudSyncStatusView.badgeText}}</text>
+          </view>
+
+          <view wx:if="{{cloudSyncStatusView.showDetails}}" class="info-list sync-detail-list">
+            <view class="info-row">
+              <text class="info-label">最近同步</text>
+              <text class="info-value">{{cloudSyncStatusView.lastSyncedText}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">待上传改动</text>
+              <text class="info-value">{{cloudSyncStatusView.pendingText}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">最近失败</text>
+              <text class="info-value">{{cloudSyncStatusView.failureText}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">同步健康</text>
+              <text class="info-value">{{cloudSyncStatusView.healthText}}</text>
+            </view>
+          </view>
+
+          <view wx:if="{{cloudSyncStatusView.showDebug}}" class="cloud-sync-debug">
+            <text class="cloud-sync-debug-title">排查建议</text>
+            <text class="cloud-sync-debug-text">{{cloudSyncStatusView.debugText}}</text>
+          </view>
+
+          <view class="sync-footer">
+            <button
+              class="sync-check-button"
+              loading="{{syncingCloudData}}"
+              disabled="{{cloudSyncStatusView.actionDisabled}}"
+              bindtap="onRetryCloudSync"
+            >
+              {{cloudSyncStatusView.actionText}}
+            </button>
+          </view>
+        </view>
+
+        <view class="paper-card overview-card">
+          <view class="section-head compact-section-head">
+            <text class="section-title">记录概览</text>
+            <text class="section-note">当前账号</text>
+          </view>
+          <view class="overview-grid">
+            <view wx:for="{{infoRows}}" wx:key="label" class="overview-item">
+              <text class="overview-label">{{item.label}}</text>
+              <text class="overview-value">{{item.value}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="paper-card settings-card">
+          <view class="section-head compact-section-head">
+            <text class="section-title">设置</text>
+            <text class="section-note">账号与数据</text>
+          </view>
+          <button wx:if="{{familyFeatureEnabled}}" class="settings-row family-row" bindtap="onCreateFamilySpace">
+            <view class="settings-main">
+              <text class="settings-title">家庭空间</text>
+              <text class="settings-desc">{{familyStateView.descText}}</text>
+            </view>
+            <text class="settings-status family-status">{{familyStateView.statusText}}</text>
+          </button>
+          <view class="settings-row settings-privacy-row">
+            <view class="settings-main">
+              <text class="settings-title">隐私与同步</text>
+              <text class="settings-desc">仅保存当前微信账号的数据；开启微信提醒后，事项标题只用于发送你主动订阅的到期通知。</text>
+            </view>
+            <text class="settings-status">已开启</text>
+          </view>
+          <button
+            class="settings-row danger-row"
+            loading="{{clearingAllData}}"
+            disabled="{{clearingAllData}}"
+            bindtap="clearAllData"
+          >
+            <view class="settings-main">
+              <text class="danger-title">清空本地与云端数据</text>
+              <text class="danger-desc">删除记录库、礼簿、心情记录和本地分类历史，昵称和头像保留。</text>
+            </view>
+            <text class="danger-arrow">›</text>
+          </button>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <floating-tabbar active="mine" />
+</view>

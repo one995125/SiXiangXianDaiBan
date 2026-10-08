@@ -1,0 +1,73 @@
+@import '../../styles/design-tokens.less';
+
+.renew-prompt {
+  position: fixed;
+  z-index: 45;
+  right: 32rpx;
+  bottom: calc(132rpx + env(safe-area-inset-bottom));
+  left: 32rpx;
+  box-sizing: border-box;
+  padding: 20rpx;
+  border: 2rpx solid fade(@color-violet, 24%);
+  border-radius: @radius-card;
+  background: rgba(255, 253, 247, 0.98);
+  box-shadow: 0 12rpx 32rpx rgba(64, 54, 91, 0.14);
+}
+
+.renew-title,
+.renew-desc {
+  display: block;
+}
+
+.renew-title {
+  color: @color-ink;
+  font-size: 26rpx;
+  font-weight: 900;
+  line-height: 36rpx;
+}
+
+.renew-desc {
+  margin-top: 4rpx;
+  color: @color-text-secondary;
+  font-size: 22rpx;
+  line-height: 30rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.renew-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12rpx;
+  margin-top: 16rpx;
+}
+
+.renew-button {
+  min-width: 128rpx;
+  height: 64rpx;
+  margin: 0;
+  padding: 0 20rpx;
+  border-radius: @radius-pill;
+  font-size: 23rpx;
+  font-weight: 800;
+  line-height: 64rpx;
+}
+
+.renew-button::after {
+  border: 0;
+}
+
+.renew-button.is-secondary {
+  background: #f4f0ea;
+  color: @color-text-secondary;
+}
+
+.renew-button.is-primary {
+  background: @color-violet;
+  color: #ffffff;
+}
+
+.renew-button.is-busy {
+  opacity: 0.58;
+}

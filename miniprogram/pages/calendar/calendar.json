@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "日历与计划总览",
+  "usingComponents": {
+    "floating-tabbar": "/components/floating-tabbar/floating-tabbar",
+    "reminder-renew-prompt": "/components/reminder-renew-prompt/reminder-renew-prompt"
+  }
+}

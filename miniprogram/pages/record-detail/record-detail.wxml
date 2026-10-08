@@ -1,0 +1,139 @@
+<view class="desk-page detail-page">
+  <scroll-view class="desk-scroll detail-scroll" scroll-y>
+    <view class="desk-content detail-content" style="padding-top: {{contentTopPadding}}px;">
+      <view class="page-head">
+        <button class="back-button" bindtap="goBack">‹</button>
+        <text class="page-title">记录详情</text>
+        <button class="more-button" bindtap="deleteRecord">
+          <view class="detail-trash">
+            <view class="detail-trash-handle"></view>
+            <view class="detail-trash-lid"></view>
+            <view class="detail-trash-body">
+              <view class="detail-trash-line"></view>
+              <view class="detail-trash-line"></view>
+            </view>
+          </view>
+        </button>
+      </view>
+
+      <view class="detail-sheet paper-sheet">
+        <block wx:if="{{record}}">
+          <view class="summary-card tone-{{record.tone}}">
+            <view class="summary-top">
+              <text class="type-pill">{{record.category}}</text>
+              <text class="status-pill">{{record.type === 'anniversary' ? record.anniversaryModeLabel : record.isRecurring ? record.checkinStatusText : record.statusText}}</text>
+            </view>
+            <text class="record-title">{{record.title}}</text>
+            <text class="record-date">{{record.type === 'note' ? (record.noteKind === 'temporary' ? '临时便签 · 每日持续显示至完成' : '长期便签 · 长期保存') : record.type === 'anniversary' ? record.anniversarySubText : record.isRecurring ? record.recurrenceText : record.type === 'todo' ? '截止 ' + record.dateLabel : record.dateLabel}}</text>
+            <view class="time-line">
+              <text class="time-value">{{record.type === 'anniversary' ? record.anniversaryDisplayText : record.isRecurring ? record.progressText : record.timeLabel}}</text>
+          <text class="relative-pill">{{record.type === 'anniversary' ? record.category : record.isRecurring ? '周期计划' : record.type === 'todo' && record.deadlineText ? record.deadlineText : record.relativeText}}</text>
+            </view>
+            <view wx:if="{{record.isRecurring}}" class="detail-progress">
+              <view class="progress-track">
+                <view class="progress-fill" style="width: {{record.progressPercent}}%;"></view>
+              </view>
+              <text class="progress-label">当前周期 {{record.progressActual}} / {{record.progressTarget}}</text>
+            </view>
+          </view>
+
+          <view wx:if="{{record.type !== 'note'}}" class="section-title">提醒设置</view>
+          <view wx:if="{{record.type !== 'note'}}" class="setting-card">
+            <view class="setting-row">
+              <view class="setting-icon">!</view>
+              <view class="setting-main">
+                <text class="setting-label">提醒时间</text>
+                <text class="setting-value">{{record.remindText}}</text>
+              </view>
+            </view>
+            <view class="setting-row reminder-setting-row">
+              <view class="setting-icon reminder">铃</view>
+              <view class="setting-main">
+                <text class="setting-label">微信提醒</text>
+                <text class="setting-value reminder-status-value">{{reminderConfig.enabled ? reminderStatus.statusText : '微信提醒暂未配置'}}</text>
+              </view>
+              <button
+                wx:if="{{reminderConfig.enabled && record.remindBeforeMinutes > 0 && !reminderStatus.hasActiveAuthorization}}"
+                class="reminder-inline-action"
+                disabled="{{reminderBusy}}"
+                bindtap="enableWechatReminder"
+              >开启</button>
+              <button
+                wx:elif="{{reminderStatus.hasActiveAuthorization}}"
+                class="reminder-inline-action is-cancel"
+                disabled="{{reminderBusy}}"
+                bindtap="disableWechatReminder"
+              >取消</button>
+            </view>
+            <view class="setting-row">
+              <view class="setting-icon repeat">↻</view>
+              <view class="setting-main">
+                <text class="setting-label">{{record.type === 'anniversary' ? '纪念方式' : record.isRecurring ? '打卡周期' : '重复规则'}}</text>
+                <text class="setting-value">{{record.type === 'anniversary' ? record.anniversaryModeLabel : record.isRecurring ? record.recurrenceText : record.repeatText}}</text>
+              </view>
+            </view>
+            <view wx:if="{{record.isRecurring}}" class="setting-row">
+              <view class="setting-icon target">✓</view>
+              <view class="setting-main">
+              <text class="setting-label">计划</text>
+                <text class="setting-value">{{record.targetText}}</text>
+              </view>
+            </view>
+            <view class="setting-row">
+              <view class="setting-icon visibility">可</view>
+              <view class="setting-main">
+                <text class="setting-label">可见范围</text>
+                <text class="setting-value">{{record.visibilityText}}</text>
+              </view>
+            </view>
+          </view>
+
+          <view wx:if="{{record.isRecurring}}" class="section-title">最近进度</view>
+          <view wx:if="{{record.isRecurring}}" class="history-card">
+            <view wx:if="{{record.recentCheckins.length}}" class="history-list">
+              <view wx:for="{{record.recentCheckins}}" wx:key="periodKey" class="history-row">
+                <text class="history-label">{{item.label}}</text>
+                <text class="history-value">{{item.actualText}}</text>
+              </view>
+            </view>
+            <text wx:else class="note-empty">还没有进度记录</text>
+          </view>
+
+          <view class="section-title">备注</view>
+          <view class="note-card">
+            <text wx:if="{{record.hasNote}}" class="note-text">{{record.note}}</text>
+            <text wx:else class="note-empty">暂无备注</text>
+          </view>
+        </block>
+
+        <view wx:else class="empty-card">
+          <text class="empty-title">记录不存在</text>
+          <text class="empty-desc">可能已经被删除，或本地数据尚未同步完成。</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view wx:if="{{record}}" class="action-safe">
+    <button class="secondary-button" disabled="{{actionBusy}}" catchtap="editRecord">编辑</button>
+    <button wx:if="{{record.canPin}}" class="primary-button {{record.isPinned ? 'is-pinned' : ''}}" disabled="{{actionBusy}}" catchtap="togglePinned">
+      {{record.pinActionText}}
+    </button>
+    <button wx:elif="{{record.isRecurring && !record.isCheckinDue}}" class="primary-button" disabled>
+      未到打卡日
+    </button>
+    <button wx:elif="{{record.isRecurring}}" class="primary-button" disabled="{{record.isCheckinDone || actionBusy}}" catchtap="markDone">
+      {{record.isCheckinDone ? '已达成' : '记录一次进度'}}
+    </button>
+    <button wx:else class="primary-button" disabled="{{record.isDone || actionBusy}}" catchtap="markDone">
+      {{record.doneActionText}}
+    </button>
+  </view>
+  <reminder-renew-prompt
+    visible="{{showRenewReminderPrompt}}"
+    title="{{record.title}}"
+    busy="{{reminderBusy}}"
+    bindconfirm="renewNextReminder"
+    binddismiss="dismissRenewReminder"
+  />
+</view>
